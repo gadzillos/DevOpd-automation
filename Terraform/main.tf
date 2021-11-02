@@ -25,15 +25,32 @@ resource "azurerm_subnet" "myterraformsubnet" {
 }
 
 # Create public IPs
-resource "azurerm_public_ip" "myterraformpublicip" {
-  name                = "myPublicIP"
+resource "azurerm_public_ip" "VM3_public_ip" {
+  name                = "myPublicIP3"
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
-  allocation_method   = "Dynamic"
+  allocation_method   = "Static"
 
   tags = {
     environment = local.environment
   }
+}
+output "ip_3" {
+  value = azurerm_public_ip.VM3_public_ip.ip_address
+}
+
+resource "azurerm_public_ip" "VM2_public_ip" {
+  name                = "myPublicIP2"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg.name
+  allocation_method   = "Static"
+
+  tags = {
+    environment = local.environment
+  }
+}
+output "ip_2" {
+  value = azurerm_public_ip.VM2_public_ip.ip_address
 }
 
 # Create Network Security Group and rule
@@ -85,6 +102,7 @@ resource "azurerm_network_interface" "Nic2" {
     name                          = "nicConfig2"
     subnet_id                     = azurerm_subnet.myterraformsubnet.id
     private_ip_address_allocation = "Dynamic"
+    public_ip_address_id          = azurerm_public_ip.VM2_public_ip.id
   }
 
   tags = {
@@ -101,7 +119,7 @@ resource "azurerm_network_interface" "Nic3" {
     name                          = "nicConfig3"
     subnet_id                     = azurerm_subnet.myterraformsubnet.id
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = azurerm_public_ip.myterraformpublicip.id
+    public_ip_address_id          = azurerm_public_ip.VM3_public_ip.id
   }
 
   tags = {
@@ -293,4 +311,25 @@ resource "azurerm_linux_virtual_machine" "myterraformvm_3" {
   tags = {
     environment = local.environment
   }
+}
+
+resource "local_file" "pem_file" {
+  filename             = pathexpand("../sshVM2.pem")
+  file_permission      = "600"
+  directory_permission = "700"
+  sensitive_content    = tls_private_key.ssh_2.private_key_pem
+}
+
+resource "local_file" "VM2publicip_file" {
+  filename             = pathexpand("../VM2publicip.txt")
+  file_permission      = "600"
+  directory_permission = "700"
+  content              = azurerm_public_ip.VM2_public_ip.ip_address
+}
+
+resource "local_file" "VM3publicip_file" {
+  filename             = pathexpand("../VM3publicip.txt")
+  file_permission      = "600"
+  directory_permission = "700"
+  content              = azurerm_public_ip.VM3_public_ip.ip_address
 }
