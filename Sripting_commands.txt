@@ -1,0 +1,26 @@
+# List of commands used in terminal to deploy VMs from scratch
+
+1) docker installation
+
+2) Terraform installation
+
+3) Azure CLI installation
+#script install
+curl -L https://aka.ms/InstallAzureCli | bash
+
+3.1) Log in
+# Run az login & enter your Azure credentials
+az login -u <username> -p <password>
+
+# BETTER to use
+https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/guides/service_principal_client_secret
+
+4) Build Infrastracture
+
+terraform innit
+terraform validate #optional
+terraform apply
+
+5) save terraform output
+
+terraform output -json output.txt
