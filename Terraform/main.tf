@@ -313,11 +313,18 @@ resource "azurerm_linux_virtual_machine" "myterraformvm_3" {
   }
 }
 
-resource "local_file" "pem_file" {
+resource "local_file" "pem_file2" {
   filename             = pathexpand("../sshVM2.pem")
   file_permission      = "600"
   directory_permission = "700"
   sensitive_content    = tls_private_key.ssh_2.private_key_pem
+}
+
+resource "local_file" "pem_file3" {
+  filename             = pathexpand("../sshVM3.pem")
+  file_permission      = "600"
+  directory_permission = "700"
+  sensitive_content    = tls_private_key.ssh_3.private_key_pem
 }
 
 resource "local_file" "VM2publicip_file" {
