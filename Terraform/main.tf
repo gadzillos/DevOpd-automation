@@ -4,6 +4,20 @@ resource "azurerm_resource_group" "rg" {
   location = var.location
 }
 
+# Encryption - SSE with PMK by default on Azure
+resource "azurerm_managed_disk" "database_disk" {
+  name                 = "PostrgeSQL_hdd"
+  location             = var.location
+  resource_group_name  = azurerm_resource_group.rg.name
+  storage_account_type = "Standard_LRS"
+  create_option        = "Empty"
+  disk_size_gb         = "1"
+
+  tags = {
+    environment = local.environment
+  }
+}
+
 # Create virtual network
 resource "azurerm_virtual_network" "myterraformnetwork" {
   name                = "myVnet"
@@ -233,6 +247,13 @@ resource "azurerm_linux_virtual_machine" "myterraformvm_1" {
   tags = {
     environment = local.environment
   }
+}
+
+resource "azurerm_virtual_machine_data_disk_attachment" "db_disk_attachment" {
+  managed_disk_id    = azurerm_managed_disk.database_disk.id
+  virtual_machine_id = azurerm_linux_virtual_machine.myterraformvm_1.id
+  lun                = "1"
+  caching            = "ReadWrite"
 }
 
 # Create virtual machine 2
