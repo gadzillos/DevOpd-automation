@@ -1,0 +1,20 @@
+Structure of the project consists of 3 levels:
+-repository(1)
+-user's PC(2)
+-cloud infrastructure(3)
+
+1. GitLab repository
+contain needed atifacts for deploying 
+-Terraform config
+-Ansible config
+-Dockerfile
+
+2. User PC
+contain initial script for instant deploying of the service by pulling it from the repo 
+
+3. Azure cloud infrastructure 
+3 instances with running services deployed on previous level 
+-VM1: Docker container with running PostgreSQL DB
+-VM2: Jenkins node deploying software to other instances
+-VM3: client service with monitoring stack and access to the DB
+
