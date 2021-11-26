@@ -2,6 +2,19 @@
 
 1) docker installation
 
+ sudo yum -y install -y yum-utils
+
+ sudo yum-config-manager \
+    --add-repo \
+    https://download.docker.com/linux/centos/docker-ce.repo
+
+sudo yum -y install docker-ce docker-ce-cli containerd.io
+service docker start
+systemctl enable docker.service
+
+
+# sudo docker build -t postgredocker .
+
 2) Terraform installation
 
 3) Azure CLI installation
