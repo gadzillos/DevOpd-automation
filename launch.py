@@ -34,10 +34,10 @@ while not ((answer == "1") or (answer == "2")):
     answer = raw_input()
 
 if answer == '1':
-	print()
+    print()
 	#az login -u <username> -p <password>
 else:
-	print()
+    print()
 	# az login --service-principal -u <app-id> -p <password-or-cert> --tenant <tenant>
 
 
