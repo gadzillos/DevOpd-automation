@@ -17,6 +17,7 @@ os.system("az login") #az login -u <username> -p <password>
 
 answer ="0"
 while answer != "y":
+	os.system("az login")
 	os.system("echo Continue? Press y when logged in.")
 	answer = raw_input()
 
