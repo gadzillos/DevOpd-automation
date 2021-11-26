@@ -1,8 +1,8 @@
 import os
 
-os.system("sudo yum update")
-os.system("sudo yum install dnf")
-os.system("sudo yum install wget unzip")
+os.system("sudo yum -y update")
+os.system("sudo yum -y install dnf")
+os.system("sudo yum -y install wget unzip")
 
 #Azure installation
 os.system("sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc")
@@ -13,7 +13,7 @@ enabled=1
 gpgcheck=1
 gpgkey=https://packages.microsoft.com/keys/microsoft.asc" | sudo tee /etc/yum.repos.d/azure-cli.repo""")
 os.system("sudo dnf install azure-cli")
-os.system("az login")
+os.system("az login") #az login -u <username> -p <password>
 
 answer ="0"
 while answer != "y":
