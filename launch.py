@@ -1,4 +1,5 @@
 import os
+import subprocess
 
 script_path = os.getcwd()
 
@@ -29,6 +30,14 @@ os.system("echo '1: login -u <username> -p <password>\n'")
 os.system("echo '2: service principal login <app-id> <password-or-cert> <tenant>\n'")
 os.system("echo '3: login using browser\n'")
 
+def export_variables(subscription_ID, appID, password, tenant):
+    bashCommand = (f"export ARM_SUBSCRIPTION_ID='{subscription_ID}' && " +
+                   f"export ARM_CLIENT_ID='{appID}' && " +
+                   f"export ARM_CLIENT_SECRET='{password}' && " +
+                   f"export ARM_TENANT_ID='{tenant}'")
+    process = subprocess.Popen(bashCommand, stdout=subprocess.PIPE)
+    output, error = process.communicate()
+
 answer ="0"
 while not ((answer == "1") or (answer == "2") or (answer == "3")):
     os.system("\n")
@@ -44,6 +53,8 @@ else:
     appID = raw_input("Type in your app-id: ")
     password = raw_input("Type in your password/cert: ")
     tenant = raw_input("Type in tenant: ")
+    subscription_ID = raw_input("Type in your subscription ID: ")
+    export_variables(subscription_ID, appID, password, tenant)
     os.system("az login --service-principal -u "+ appID +" -p "+ password +" --tenant "+ tenant)
 
 #terraform launch
