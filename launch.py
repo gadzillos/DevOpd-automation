@@ -36,7 +36,7 @@ def export_variables(subscription_id, app_id, password_value, tenant_value):
                     f"export ARM_CLIENT_ID='{app_id}' && " +
                     f"export ARM_CLIENT_SECRET='{password_value}' && " +
                     f"export ARM_TENANT_ID='{tenant_value}'")
-    process = subprocess.run(bash_command)
+    process = subprocess.run(bash_command, shell = True)
 
 answer = "0"
 while not ((answer == "1") or (answer == "2") or (answer == "3")):
