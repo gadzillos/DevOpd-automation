@@ -41,19 +41,19 @@ def export_variables(subscription_ID, appID, password, tenant):
 answer ="0"
 while not ((answer == "1") or (answer == "2") or (answer == "3")):
     os.system("\n")
-    answer = raw_input("Type in option number: ")
+    answer = input("Type in option number: ")
 
 if answer == '1':
-    login = raw_input("Type in your login: ")
-    password = raw_input("Type in your password: ")
+    login = input("Type in your login: ")
+    password = input("Type in your password: ")
     os.system("az login -u " + login + " -p "+ password)
 elif answer == '3':
     os.system("az login")
 else:
-    appID = raw_input("Type in your app-id: ")
-    password = raw_input("Type in your password/cert: ")
-    tenant = raw_input("Type in tenant: ")
-    subscription_ID = raw_input("Type in your subscription ID: ")
+    appID = input("Type in your app-id: ")
+    password = input("Type in your password/cert: ")
+    tenant = input("Type in tenant: ")
+    subscription_ID = input("Type in your subscription ID: ")
     export_variables(subscription_ID, appID, password, tenant)
     os.system("az login --service-principal -u "+ appID +" -p "+ password +" --tenant "+ tenant)
 
