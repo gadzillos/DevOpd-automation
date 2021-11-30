@@ -46,9 +46,6 @@ else:
     tenant = raw_input("Type in tenant: ")
     os.system("az login --service-principal -u "+ appID +" -p "+ password +" --tenant "+ tenant)
 
-#Azure login
-os.system("az login") 
-
 #terraform launch
 import os
 os.chdir(script_path)
