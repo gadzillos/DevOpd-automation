@@ -31,12 +31,16 @@ os.system("echo '2: service principal login <app-id> <password-or-cert> <tenant>
 os.system("echo '3: login using browser\n'")
 
 
-def export_variables(subscription_id, app_id, password_value, tenant_value):
+def login_and_terraform_apply(subscription_id, app_id, password_value, tenant_value):
+    os.chdir(script_path)
     bash_command = (f"export ARM_SUBSCRIPTION_ID='{subscription_id}' && " +
                     f"export ARM_CLIENT_ID='{app_id}' && " +
                     f"export ARM_CLIENT_SECRET='{password_value}' && " +
-                    f"export ARM_TENANT_ID='{tenant_value}'")
+                    f"export ARM_TENANT_ID='{tenant_value}' &&" +
+                    f"az login --service-principal -u '{app_id}' -p '{password_value}' --tenant '{tenant_value}' &&" +
+                    f"terraform init && terraform validate && terraform apply")
     process = subprocess.run(bash_command, shell = True)
+
 
 answer = "0"
 while not ((answer == "1") or (answer == "2") or (answer == "3")):
@@ -54,11 +58,5 @@ else:
     password = input("Type in your password/cert: ")
     tenant = input("Type in tenant: ")
     subscription_ID = input("Type in your subscription ID: ")
-    export_variables(subscription_ID, appID, password, tenant)
-    os.system("az login --service-principal -u " + appID + " -p " + password + " --tenant " + tenant)
-
-# terraform launch
-os.chdir(script_path)
-os.system("terraform init")
-os.system("terraform validate")
-os.system("terraform apply")
+    login_and_terraform_apply(subscription_ID, appID, password, tenant)
+    
