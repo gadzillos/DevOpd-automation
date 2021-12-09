@@ -1,12 +1,17 @@
   - name: Jenkins installation
     hosts: jenkins_node
+    become: yes
+    become_user: root
 
     tasks:
     - name: Prepare CentOS
       ansible.builtin.shell: |
-        yum update
-        yum update ca-certificates
-        yum install epel-release
+        yum -y update
+        yum -y update ca-certificates
+        yum -y install epel-release
+        yum -y install libselinux-python3
+      vars:
+	      ansible_python_interpreter: /usr/bin/python
 
     - name: Download Long Term Jenkins release
       get_url:
@@ -22,11 +27,16 @@
       yum:
         name: java-11-openjdk-devel
         state: present
+      vars:
+	      ansible_python_interpreter: /usr/bin/python
 
     - name: Install jenkins
       yum:
         name: jenkins
         state: present
+      vars:
+	      ansible_python_interpreter: /usr/bin/python
+
 
     - name: daemon-reload to pick up config changes
       ansible.builtin.systemd:
