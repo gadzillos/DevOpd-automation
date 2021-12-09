@@ -107,6 +107,11 @@ resource "azurerm_network_interface" "Nic1" {
   }
 }
 
+output "VM1_private_ip" {
+  value     = azurerm_network_interface.Nic1.private_ip_address
+  sensitive = false
+}
+
 resource "azurerm_network_interface" "Nic2" {
   name                = "Nic2"
   location            = var.location
@@ -346,6 +351,13 @@ resource "local_file" "pem_file3" {
   file_permission      = "600"
   directory_permission = "700"
   sensitive_content    = tls_private_key.ssh_3.private_key_pem
+}
+
+resource "local_file" "VM1privateip_file" {
+  filename             = pathexpand("../VM1privateip.txt")
+  file_permission      = "600"
+  directory_permission = "700"
+  content              = azurerm_network_interface.Nic1.private_ip_address
 }
 
 resource "local_file" "VM2publicip_file" {
