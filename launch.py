@@ -61,6 +61,9 @@ else:
     login_and_terraform_apply(subscription_ID, appID, password, tenant)
     
 #SSH connection
+with open('VM2publicip.txt') as f:
+	s = f.read()
+os.system("ssh -o StrictHostKeyChecking=no -i sshVM2.pem azureuser@"+s)
 
 #Ansible installation
 os.system("echo <-------- Updating system -------->")
