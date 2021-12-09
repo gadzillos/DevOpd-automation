@@ -1,0 +1,5 @@
+version: '3'
+services:
+  my-service:
+    build: .
+    tty: true    

@@ -1,4 +1,7 @@
-# Install custom PostgreSQL
+# This Dockerfile based on CentOS 7 and provide basic postgresql 14 server
+# docker-systemctl-replacement - https://github.com/gdraheim/docker-systemctl-replacement
+# CMD is required to load postgresql-14.service | otherwise use custom startup.sh
+# to manually enable service. This Dcokerfile doesn't create Postgres role and database.
 
 FROM centos:7.9.2009
 
@@ -7,7 +10,6 @@ RUN yum -y update
 
 # install python
 RUN yum install -y python3
-#RUN alternatives --set python /usr/bin/python3
 
 # Install the repository RPM:
 RUN yum install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
@@ -15,28 +17,25 @@ RUN yum install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x
 # Install PostgreSQL:
 RUN yum install -y postgresql14-server postgresql14-contrib 
 
-# initialize the database and enable automatic start:
-#RUN /usr/pgsql-14/bin/postgresql-14-setup initdb
-#RUN systemctl enable postgresql-14
-#RUN systemctl start postgresql-14
+# Enable postgresql-14.service startup
+RUN systemctl enable postgresql-14.service
+
+# Add systemctl support through script
+COPY systemctl.py /usr/bin/systemctl
+RUN chmod a+x /usr/bin/systemctl
+
+# Initialize a new database cluster
+RUN /usr/pgsql-14/bin/postgresql-14-setup initdb
 
 # Run the rest of the commands as the ``postgres`` user created by the ``postgresql14-server``
 USER postgres
 
-RUN  postgresql-14-setup --initdb
-# Create a PostgreSQL role named ``docker`` with ``docker`` as the password and
-# then create a database `docker` owned by the ``docker`` role.
-RUN    /etc/init.d/postgresql start &&\
-    psql --command "CREATE USER docker WITH SUPERUSER PASSWORD 'docker';" &&\
-    createdb -O docker docker
-
 # Adjust PostgreSQL configuration so that remote connections to the
 # database are possible.
-RUN echo "host all  all    0.0.0.0/0  md5" >> /etc/postgresql/14/main/pg_hba.conf
-
+RUN echo "host all  all    0.0.0.0/0  md5" >> /var/lib/pgsql/14/data/pg_hba.conf
 
 # And add ``listen_addresses`` to ``/etc/postgresql/14/main/postgresql.conf``
-RUN echo "listen_addresses='*'" >> /etc/postgresql/14/main/postgresql.conf
+RUN echo "listen_addresses='*'" >> /var/lib/pgsql/14/data/postgresql.conf
 
 # Expose the PostgreSQL port
 EXPOSE 5432
@@ -45,4 +44,5 @@ EXPOSE 5432
 VOLUME  ["/etc/postgresql", "/var/log/postgresql", "/var/lib/postgresql"]
 
 # Set the default command to run when starting the container
-CMD ["/usr/lib/postgresql/14/bin/postgres", "-D", "/var/lib/postgresql/14/main", "-c", "config_file=/etc/postgresql/14/main/postgresql.conf"]
+# loads postgresql-14.service
+CMD /usr/bin/systemctl

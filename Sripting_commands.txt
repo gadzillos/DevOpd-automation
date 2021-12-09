@@ -13,7 +13,15 @@ service docker start
 systemctl enable docker.service
 
 
-# sudo docker build -t postgredocker .
+# sudo docker build . -t postgresql
+1.1)
+sudo docker build . -t postgresql
+sudo docker run -itd --name postgres_db --privileged postgresql
+sudo docker ps
+sudo docker exec -u root -it postgres_db /bin/bash
+#systemctl start postgresql-14.service
+su - postgres
+psql
 
 2) Terraform installation
 
