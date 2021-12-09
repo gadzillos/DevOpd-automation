@@ -60,3 +60,26 @@ else:
     subscription_ID = input("Type in your subscription ID: ")
     login_and_terraform_apply(subscription_ID, appID, password, tenant)
     
+#SSH connection
+
+#Ansible installation
+os.system("echo <-------- Updating system -------->")
+os.system("sudo yum update -y")
+os.system("sudo yum install -y python3-pip")
+os.system("sudo pip3 install --upgrade pip")
+
+os.system("echo <-------- Installing Ansible -------->")
+os.system("pip3 install "ansible==2.9.17"")
+os.system("pip3 install ansible[azure]")
+
+os.system("echo <-------- Installing git. Clone -------->")
+os.system("ansible --version")
+os.system("sudo yum -y install git")
+os.system("git --version")
+
+os.system("echo <-------- Ansible-playbook for Jenkins -------->")
+os.system("git clone https://gitlab.com/devops_netcraker/repo.git")
+os.system("cd repo")
+os.system("git checkout pre_release")
+os.system("cd Ansible/")
+os.system("ansible-playbook setup.yml")
