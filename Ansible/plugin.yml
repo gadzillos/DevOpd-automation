@@ -7,6 +7,9 @@
       - item: ansible
 
     tasks:    
+    - name: Add User admin to jenkins   
+      ansible.builtin.shell: echo 'jenkins.model.Jenkins.instance.securityRealm.createAccount("admin","admin")' | java -jar /root/.jenkins/jenkins-cli.jar -s http://{{jenkins_ip_external}}:{{jenkins_port}}/jenkins/ groovy = 
+      
     - name: Install ansible plugin   
       ansible.builtin.shell: "java -jar {{jenkins_path}}/jenkins-cli.jar -s http://{{jenkins_ip_external}}:{{jenkins_port}}/jenkins/install-plugin {{ item }}"
         jenkins_plugin:     
