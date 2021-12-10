@@ -1,5 +1,9 @@
 [jenkins_node]
-<ip here> ansible_ssh_user=root ansible_ssh_private_key=/path/to/the/file
+51.116.228.105 ansible_ssh_user=azureuser ansible_ssh_private_key=/sshVM2.pem
 
 [docker_node]
-<another ip here> ansible_ssh_user=root ansible_ssh_private_key=/path/to/the/another/file
+10.0.1.6 ansible_ssh_user=azureuser ansible_ssh_private_key=/sshVM1.pem
+
+[wildfly_node]
+51.116.228.101 ansible_ssh_user=azureuser ansible_ssh_private_key=/sshVM3.pem
+
