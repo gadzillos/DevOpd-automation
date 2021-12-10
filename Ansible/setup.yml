@@ -13,19 +13,19 @@
         yum install -y python3-pip
         pip3 install --upgrade pip
       vars:
-	      ansible_python_interpreter: /usr/bin/python
+        ansible_python_interpreter: /usr/bin/python
 
-    -name: Installing Git. Clone.
-        ansible.builtin.shell:
-          yum -y install git
-          git --version
-          git clone -b pre_release https://gitlab.com/devops_netcraker/repo.git
-       
-    -name: Ansible installation
+    - name: Installing Git. Clone.
       ansible.builtin.shell:
-          python -m pip install ansible
+        yum -y install git
+        git --version
+        git clone -b pre_release https://gitlab.com/devops_netcraker/repo.git
+       
+    - name: Ansible installation
+      ansible.builtin.shell:
+        python -m pip install ansible
       vars:
-	      ansible_python_interpreter: /usr/bin/python
+        ansible_python_interpreter: /usr/bin/python
 
     - name: Download Long Term Jenkins release
       get_url:
@@ -42,14 +42,14 @@
         name: java-11-openjdk-devel
         state: present
       vars:
-	      ansible_python_interpreter: /usr/bin/python
+        ansible_python_interpreter: /usr/bin/python
 
     - name: Install jenkins
       yum:
         name: jenkins
         state: present
       vars:
-	      ansible_python_interpreter: /usr/bin/python
+        ansible_python_interpreter: /usr/bin/python
 
 
     - name: daemon-reload to pick up config changes

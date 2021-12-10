@@ -41,30 +41,33 @@ def login_and_terraform_apply(subscription_id, app_id, password_value, tenant_va
                     f"terraform init && terraform validate && terraform apply -auto-approve && echo done!")
     process = subprocess.run(bash_command, shell = True)
 
+def inventory_build():
+    os.chdir(original_path + "/Ansible")
+    ip1, ip2, ip3 = "", "", ""
 
-answer = "0"
-while not ((answer == "1") or (answer == "2") or (answer == "3")):
-    os.system("\n")
-    answer = input("Type in option number: ")
-
-if answer == '1':
-    login = input("Type in your login: ")
-    password = input("Type in your password: ")
-    os.system("az login -u " + login + " -p " + password)
-elif answer == '3':
-    os.system("az login")
-else:
-    appID = input("Type in your app-id: ")
-    password = input("Type in your password/cert: ")
-    tenant = input("Type in tenant: ")
-    subscription_ID = input("Type in your subscription ID: ")
-    login_and_terraform_apply(subscription_ID, appID, password, tenant)
+    with open('../VM2publicip.txt') as f:
+        ip2 = f.read()
+    with open('../VM3publicip.txt') as f:
+        ip3 = f.read()    
+    with open('../VM1privateip.txt') as f:
+        ip1 = f.read()
     
-#SSH connection
-os.chdir(original_path)
-with open('VM2publicip.txt') as f:
-	s = f.read()
-os.system("ssh -o StrictHostKeyChecking=no -i sshVM2.pem azureuser@"+s)
+    inventory = (f"[jenkins_node]\n" + f"{ip2} ansible_ssh_user=azureuser ansible_ssh_private_key=../sshVM2.pem\n\n" +
+                 f"[docker_node]\n" + f"{ip1} ansible_ssh_user=azureuser ansible_ssh_private_key=../sshVM1.pem\n\n" +
+                 f"[wildfly_node]\n" + f"{ip3} ansible_ssh_user=azureuser ansible_ssh_private_key=../sshVM3.pem\n\n")
+
+    with open('inventory', 'w') as f:
+        f.writelines(inventory)
+
+
+appID = input("Type in your app-id: ")
+password = input("Type in your password/cert: ")
+tenant = input("Type in tenant: ")
+subscription_ID = input("Type in your subscription ID: ")
+login_and_terraform_apply(subscription_ID, appID, password, tenant)
+    
+# Ansible inventory build
+inventory_build()
 
 #Ansible installation
 os.system("echo <-------- Updating system -------->")
@@ -74,16 +77,11 @@ os.system("sudo pip3 install --upgrade pip")
 
 os.system("echo <-------- Installing Ansible -------->")
 os.system("pip3 install 'ansible==2.9.17'")
-os.system("pip3 install ansible[azure]")
 
 os.system("echo <-------- Installing git. Clone -------->")
 os.system("ansible --version")
 os.system("sudo yum -y install git")
 os.system("git --version")
 
-os.system("echo <-------- Ansible-playbook for Jenkins -------->")
-os.system("git clone https://gitlab.com/devops_netcraker/repo.git")
-os.system("cd repo")
-os.system("git checkout pre_release")
-os.system("cd Ansible/")
-os.system("ansible-playbook setup.yml")
+os.chdir(original_path + "/Ansible")
+os.system("ansible-playbook -i inventory setup.yml")
