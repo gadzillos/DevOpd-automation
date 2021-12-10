@@ -24,7 +24,7 @@
   <disabled>false</disabled>
   <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
   <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
-  <authToken>playbooktkn</authToken>
+  <authToken>playbooktkn2</authToken>
   <triggers/>
   <concurrentBuild>false</concurrentBuild>
   <builders>

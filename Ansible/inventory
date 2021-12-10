@@ -3,3 +3,6 @@
 
 [docker_node]
 <another ip here> ansible_ssh_user=root ansible_ssh_private_key=/path/to/the/another/file
+
+[wildfly_node]
+<another ip here> ansible_ssh_user=root ansible_ssh_private_key=/path/to/the/another/file
