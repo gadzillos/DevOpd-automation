@@ -38,7 +38,7 @@ def login_and_terraform_apply(subscription_id, app_id, password_value, tenant_va
                     f"export ARM_CLIENT_SECRET='{password_value}' && " +
                     f"export ARM_TENANT_ID='{tenant_value}' &&" +
                     f"az login --service-principal -u '{app_id}' -p '{password_value}' --tenant '{tenant_value}' &&" +
-                    f"terraform init && terraform validate && terraform apply -auto-approve")
+                    f"terraform init && terraform validate && terraform apply")
     process = subprocess.run(bash_command, shell = True)
 
 
@@ -72,7 +72,7 @@ os.system("sudo yum install -y python3-pip")
 os.system("sudo pip3 install --upgrade pip")
 
 os.system("echo <-------- Installing Ansible -------->")
-os.system("pip3 install "ansible==2.9.17"")
+os.system("pip3 install 'ansible==2.9.17'")
 os.system("pip3 install ansible[azure]")
 
 os.system("echo <-------- Installing git. Clone -------->")
