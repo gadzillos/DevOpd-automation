@@ -10,6 +10,20 @@
         yum -y update ca-certificates
         yum -y install epel-release
         yum -y install libselinux-python3
+        yum install -y python3-pip
+        pip3 install --upgrade pip
+      vars:
+	      ansible_python_interpreter: /usr/bin/python
+
+    -name: Installing Git. Clone.
+        ansible.builtin.shell:
+          yum -y install git
+          git --version
+          git clone -b pre_release https://gitlab.com/devops_netcraker/repo.git
+       
+    -name: Ansible installation
+      ansible.builtin.shell:
+          python -m pip install ansible
       vars:
 	      ansible_python_interpreter: /usr/bin/python
 
