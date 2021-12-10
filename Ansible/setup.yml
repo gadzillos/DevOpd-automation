@@ -12,6 +12,13 @@
         yum -y install libselinux-python3
       vars:
 	      ansible_python_interpreter: /usr/bin/python
+       
+    -name: Ansible installation
+      ansible.builtin.shell:
+          python get-pip.py
+          python -m pip install ansible
+      vars:
+	      ansible_python_interpreter: /usr/bin/python
 
     - name: Download Long Term Jenkins release
       get_url:
