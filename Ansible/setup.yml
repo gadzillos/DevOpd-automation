@@ -15,7 +15,7 @@
         yum install -y curl
         cd ~/
         mkdir repo_with_keys
-        tar -xf repo.tar --destination /repo_with_keys
+        tar -xf repo.tar -C repo_with_keys
         cd repo_with_keys
         python3 add_known_hosts.py
 
@@ -23,13 +23,13 @@
         ansible_python_interpreter: /usr/bin/python
 
     - name: Installing Git. Clone.
-      ansible.builtin.shell:
+      ansible.builtin.shell: |
         yum -y install git
         git --version
         git clone -b pre_release https://gitlab.com/devops_netcraker/repo.git
        
     - name: Ansible installation
-      ansible.builtin.shell:
+      ansible.builtin.shell: |
         python -m pip install ansible
       vars:
         ansible_python_interpreter: /usr/bin/python
