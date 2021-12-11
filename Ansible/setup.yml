@@ -6,18 +6,16 @@
     tasks:
     - name: Prepare CentOS
       ansible.builtin.shell: |
+        cd
+        mkdir repo_with_keys
+        tar -xf repo.tar -C repo_with_keys
         yum -y update
         yum -y update ca-certificates
         yum -y install epel-release
         yum -y install libselinux-python3
+        yum -y install curl
         yum install -y python3-pip
-        pip3 install --upgrade pip
-        yum install -y curl
-        cd ~/
-        mkdir repo_with_keys
-        tar -xf repo.tar -C repo_with_keys
-        cd repo_with_keys
-        python3 add_known_hosts.py
+        pip3 install --user --upgrade pip && cd && cd repo_with_keys && python3 add_known_hosts.py
 
       vars:
         ansible_python_interpreter: /usr/bin/python
