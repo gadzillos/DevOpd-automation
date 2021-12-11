@@ -43,7 +43,8 @@ def login_and_terraform_apply(subscription_id, app_id, password_value, tenant_va
 
 def inventory_build():
     os.chdir(original_path + "/Ansible")
-    ip1, ip2, ip3 = "", "", ""
+    ip1, ip3 = "", ""
+    global ip2
 
     with open('../VM2publicip.txt') as f:
         ip2 = f.read()
@@ -69,6 +70,9 @@ login_and_terraform_apply(subscription_ID, appID, password, tenant)
 # Ansible inventory build
 inventory_build()
 
+# Add VM2 to known_hosts for ssh connection
+os.system(f"ssh-keyscan -H {ip2} >> ~/.ssh/known_hosts")
+
 #Ansible installation
 os.system("echo <-------- Updating system -------->")
 os.system("sudo yum update -y")
@@ -83,5 +87,11 @@ os.system("ansible --version")
 os.system("sudo yum -y install git")
 os.system("git --version")
 
+# send tar archive to VM2
+os.chdir(original_path)
+os.system(f"tar -cf repo.tar . &&" + 
+          f"rsync --rsh='ssh -i sshVM2.pem' repo.tar azureuser@{ip2}:~")
+
+# Ansible playbook start
 os.chdir(original_path + "/Ansible")
 os.system("ansible-playbook -i inventory setup.yml")
