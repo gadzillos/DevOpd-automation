@@ -97,7 +97,7 @@ inventory_build()
 terminal_message("Inventory builded")
 
 # Add VM2 to known_hosts for ssh connection
-os.system("touch known_hosts")
+os.system("touch ~/.ssh/known_hosts")
 os.system(f"ssh-keyscan -H {ip2} >> ~/.ssh/known_hosts")
 
 #Ansible installation
