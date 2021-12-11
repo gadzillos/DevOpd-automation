@@ -12,11 +12,12 @@
         yum -y install libselinux-python3
         yum install -y python3-pip
         pip3 install --upgrade pip
+        yum install -y curl
         cd ~/
         mkdir repo_with_keys
         tar -xf repo.tar --destination /repo_with_keys
         cd repo_with_keys
-        ssh-keyscan -H  >> ~/.ssh/known_hosts
+        python3 add_known_hosts.py
 
       vars:
         ansible_python_interpreter: /usr/bin/python
