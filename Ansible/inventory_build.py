@@ -1,4 +1,4 @@
-import os
+# Used in launch.py script
 
 ip1, ip2, ip3 = "", "", ""
 
