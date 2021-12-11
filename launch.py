@@ -118,7 +118,7 @@ os.system("git --version")
 terminal_message("sending tar file to VM")
 os.chdir(original_path)
 os.system(f"tar -cf repo.tar . &&" + 
-          f"rsync --rsh='ssh -i sshVM2.pem' repo.tar azureuser@{ip2}:~")
+          f"rsync --rsh='ssh -i sshVM2.pem' repo.tar azureuser@{ip2}:~ && echo 'rsync done'")
 
 # Ansible playbook start
 os.chdir(original_path + "/Ansible")
