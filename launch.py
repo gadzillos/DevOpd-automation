@@ -33,11 +33,6 @@ gpgcheck=1
 gpgkey=https://packages.microsoft.com/keys/microsoft.asc" | sudo tee /etc/yum.repos.d/azure-cli.repo""")
 os.system("sudo dnf -y install azure-cli")
 
-os.system("echo '\n~~~~~~~~~~\nChoose Azure login option:\n~~~~~~~~~~\n'")
-os.system("echo '1: login -u <username> -p <password>\n'")
-os.system("echo '2: service principal login <app-id> <password-or-cert> <tenant>\n'")
-os.system("echo '3: login using browser\n'")
-
 
 def login_and_terraform_apply(subscription_id, app_id, password_value, tenant_value):
     os.chdir(script_path)
@@ -48,6 +43,7 @@ def login_and_terraform_apply(subscription_id, app_id, password_value, tenant_va
                     f"az login --service-principal -u '{app_id}' -p '{password_value}' --tenant '{tenant_value}' &&" +
                     f"terraform init && terraform validate && terraform apply -auto-approve && echo done!")
     process = subprocess.run(bash_command, shell = True)
+
 
 def inventory_build():
     os.chdir(original_path + "/Ansible")
@@ -68,14 +64,15 @@ def inventory_build():
     with open('inventory', 'w') as f:
         f.writelines(inventory)
 
+
 #login information passed to terraform
 with open(args.path,'r') as f:	
 	data= json.load(f)
-app_id = dat['appId']
-password = dat['password']
-tenant = dat['tenant']
-subscription id = dat['subscription id']
-login_and_terraform_apply(subscription_ID, appID, password, tenant)
+app_ID = data['appId']
+password = data['password']
+tenant = data['tenant']
+subscription_ID = data['subscription id']
+login_and_terraform_apply(subscription_ID, app_ID, password, tenant)
     
 # Ansible inventory build
 inventory_build()
