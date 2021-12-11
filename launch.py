@@ -15,7 +15,7 @@ def terminal_message(message):
         fill_line += "~"
     os.system(f"echo && echo -e '{cyan}{fill_line}'' && echo")
     os.system(f"echo -e '{cyan}{message}'")
-    os.system(f"echo && echo '{cyan}{fill_line}{no_color}' && echo")
+    os.system(f"echo && echo -e '{cyan}{fill_line}{no_color}' && echo")
     
     
 #parsing file with login to Azure
