@@ -71,7 +71,7 @@ with open(args.path,'r') as f:
 app_ID = data['appId']
 password = data['password']
 tenant = data['tenant']
-subscription_ID = data['subscription id']
+subscription_ID = data['subscriptionId']
 login_and_terraform_apply(subscription_ID, app_ID, password, tenant)
     
 # Ansible inventory build
