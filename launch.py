@@ -1,5 +1,13 @@
 import os
 import subprocess
+import argparse
+import codecs
+import json
+
+#parsing file with login to Azure
+parser = argparse.ArgumentParser()
+parser.add_argument('-p','--path', help='implement path to login file')
+args= parser.parse_args()
 
 script_path = os.getcwd()
 original_path = script_path
@@ -60,11 +68,13 @@ def inventory_build():
     with open('inventory', 'w') as f:
         f.writelines(inventory)
 
-
-appID = input("Type in your app-id: ")
-password = input("Type in your password/cert: ")
-tenant = input("Type in tenant: ")
-subscription_ID = input("Type in your subscription ID: ")
+#login information passed to terraform
+with open(args.path,'r') as f:	
+	data= json.load(f)
+app_id = dat['appId']
+password = dat['password']
+tenant = dat['tenant']
+subscription id = dat['subscription id']
 login_and_terraform_apply(subscription_ID, appID, password, tenant)
     
 # Ansible inventory build
