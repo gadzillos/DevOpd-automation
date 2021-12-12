@@ -1,4 +1,9 @@
 ---
+- name: Add Jenkins Redhat repository and key
+  ansible.builtin.shell: |
+    sudo wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
+    sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key
+
 - name: Install java
   yum:
     name: java-11-openjdk-devel
@@ -12,15 +17,15 @@
     git --version
     git clone -b pre_release https://gitlab.com/devops_netcraker/repo.git
        
-- name: Download Long Term Jenkins release
-  get_url:
-    url: "{{ jenkins_url }}"
-    dest: /etc/yum.repos.d/jenkins.repo
+# - name: Download Long Term Jenkins release
+#   get_url:
+#     url: "{{ jenkins_url }}"
+#     dest: /etc/yum.repos.d/jenkins.repo
 
-- name: Import jenkins key from url
-  ansible.builtin.rpm_key:
-    state: present
-    key: {{ jenkins_key }}
+# - name: Import jenkins key from url
+#   ansible.builtin.rpm_key:
+#     state: present
+#     key: "{{ jenkins_key }}"
 
 - name: Install jenkins
   yum:
