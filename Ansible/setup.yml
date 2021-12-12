@@ -10,7 +10,7 @@
         sudo yum -y update
         sudo yum -y update ca-certificates
         sudo yum -y install epel-release
-        udo yum install -y python3
+        sudo yum install -y python3
         sudo yum -y install libselinux-python3
         sudo yum -y install curl
         cd && cd repo_with_keys && sudo python3 add_known_hosts.py
