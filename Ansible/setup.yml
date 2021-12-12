@@ -10,19 +10,17 @@
         sudo yum -y update
         sudo yum -y update ca-certificates
         sudo yum -y install epel-release
+        udo yum install -y python3
         sudo yum -y install libselinux-python3
         sudo yum -y install curl
-        sudo yum install -y python3 python3-pip
-        python -m pip install --upgrade pip && cd && cd repo_with_keys && sudo python3 add_known_hosts.py
+        cd && cd repo_with_keys && sudo python3 add_known_hosts.py
 
       vars:
         ansible_python_interpreter: /usr/bin/python
     
     - name: Ansible installation
       ansible.builtin.shell: |
-        python -m pip install ansible
-      vars:
-        ansible_python_interpreter: /usr/bin/python
+        sudo yum -y install ansible
 
   - name: Jenkins installation
     hosts: jenkins_node
@@ -36,12 +34,6 @@
         git --version
         git clone -b pre_release https://gitlab.com/devops_netcraker/repo.git
        
-    - name: Ansible installation
-      ansible.builtin.shell: |
-        pip3 install ansible
-      vars:
-        ansible_python_interpreter: /usr/bin/python
-
     - name: Download Long Term Jenkins release
       get_url:
         url: https://pkg.jenkins.io/redhat-stable/jenkins.repo
