@@ -122,5 +122,5 @@ os.system(f"tar -cf repo.tar . &&" +
 
 # Ansible playbook start
 os.chdir(original_path + "/Ansible")
-os.system("ansible-playbook -i inventory setup.yml")
-os.system("ansible-playbook -i inventory jenkins_job.yml")
+os.system("ansible-playbook -i inventory jenkins_node_preparation.yml")
+#os.system("ansible-playbook -i inventory jenkins_job.yml")
