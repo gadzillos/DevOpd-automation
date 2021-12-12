@@ -1,5 +1,7 @@
+# https://docs.ansible.com/ansible/2.9/modules/jenkins_plugin_module.html
+
   - name: Plugin installation
-    hosts: jenkins_node
+    hosts: localhost
     vars:
       - jenkins_path: /var/lib/jenkins
       - jenkins_ip_external: 127.0.0.1
@@ -8,14 +10,16 @@
 
     tasks:
     - name: Add User admin to jenkins
-      ansible.builtin.shell: echo 'jenkins.model.Jenkins.instance.securityRealm.createAccount("admin","admin")' | java -jar /root/.jenkins/jenkins-cli.jar -s http://{{jenkins_ip_external}}:{{jenkins_port}}/jenkins/ groovy = 
+      ansible.builtin.shell: echo 'jenkins.model.Jenkins.instance.securityRealm.createAccount("admin","admin")' | java -jar /root/.jenkins/jenkins-cli.jar -s "http://{{ jenkins_ip_external }}:{{ jenkins_port }}/jenkins/" -auth admin:admin -noKeyAuth groovy = – 
 
     - name: Install ansible plugin
-      ansible.builtin.shell: "java -jar {{jenkins_path}}/jenkins-cli.jar -s http://{{jenkins_ip_external}}:{{jenkins_port}}/jenkins/install-plugin {{ item }}"
       jenkins_plugin:
         name: "{{ item }}"
         url: "http://127.0.0.1:8080/jenkins"
         timeout: 1000
+
+    - name: Config ansible plugin
+      ansible.builtin.shell: "java -jar {{jenkins_path}}/jenkins-cli.jar -s http://{{jenkins_ip_external}}:{{jenkins_port}}/jenkins/install-plugin {{ item }}"  
       loop:
         - ws-cleanup # Workspace Cleanup
         - workflow-aggregator # Pipeline
@@ -29,7 +33,7 @@
 
     - name: Add wildfly job to jenkins
       ansible.builtin.shell: "java -jar /root/.jenkins/jenkins-cli.jar -s http://{{jenkins_ip_external}}:{{jenkins_port}}/jenkins/ create-job Wildfly_installation < /configw.xml"
-
+    
     - name: Trigger remote build
       ansible.builtin.shell: |
         curl {{ jenkins_node_ip }}/job/Docker_installation/build?token=playbooktkn1
