@@ -1,0 +1,14 @@
+---
+- name: Update system and install ansibe
+  hosts: jenkins_node
+
+  roles:
+    - name: ansible_install
+
+- name: Install Jenkins and java
+  hosts: jenkins_node
+
+  roles:
+    - name: jenkins_install
+      become: true
+      become_user: root
