@@ -12,9 +12,15 @@
         sudo yum -y install epel-release
         sudo yum -y install libselinux-python3
         sudo yum -y install curl
-        sudo yum install -y python3-pip
+        sudo yum install -y python3 python3-pip
         pip3 install --user --upgrade pip && cd && cd repo_with_keys && sudo python3 add_known_hosts.py
 
+      vars:
+        ansible_python_interpreter: /usr/bin/python
+    
+    - name: Ansible installation
+      ansible.builtin.shell: |
+        python -m pip install ansible
       vars:
         ansible_python_interpreter: /usr/bin/python
 
@@ -32,7 +38,7 @@
        
     - name: Ansible installation
       ansible.builtin.shell: |
-        python3 -m pip install ansible
+        pip3 install ansible
       vars:
         ansible_python_interpreter: /usr/bin/python
 
