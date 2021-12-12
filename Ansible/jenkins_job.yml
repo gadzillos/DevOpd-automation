@@ -11,7 +11,7 @@
   tasks:
   - name: Jenkins response
     ansible.builtin.uri:
-      url: "http://localhost:8080/jenkins"
+      url: "http://127.0.0.1:8080/jenkins"
       status_code: 200
     register: result
     until: result.status == 200
@@ -20,7 +20,7 @@
 
   - name: Download jenkins-cli.jar
     ansible.builtin.get_url:
-      url: "http://localhost:8080/jenkins/jnlpJars/jenkins-cli.jar"
+      url: "http://{{ jenkins_ip_external }}:8080/jenkins/jnlpJars/jenkins-cli.jar"
       dest: "~/"
 
   - name: Add User admin to jenkins
