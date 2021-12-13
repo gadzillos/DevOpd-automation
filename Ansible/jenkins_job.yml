@@ -128,9 +128,14 @@
     retries: 5
     delay: 10
     check_mode: false
+  
+  - name: Remove Jenkins security init scripts after first startup.
+    file:
+      path: "{{ jenkins_home }}/init.groovy.d/basic-security.groovy"
+      state: absent
 
-  - name: Add User admin to jenkins
-    ansible.builtin.shell: echo 'jenkins.model.Jenkins.instance.securityRealm.createAccount("admin","admin")' | java -jar {{ jenkins_jar_location }} -s "http://{{ jenkins_ip_external }}:{{ jenkins_port }}/jenkins/" -auth admin:admin -noKeyAuth groovy = – 
+  # - name: Add User admin to jenkins
+  #   ansible.builtin.shell: echo 'jenkins.model.Jenkins.instance.securityRealm.createAccount("admin","admin")' | java -jar {{ jenkins_jar_location }} -s "http://{{ jenkins_ip_external }}:{{ jenkins_port }}/jenkins/" -auth admin:admin -noKeyAuth groovy = – 
 
   - name: Install ansible plugin
     jenkins_plugin:

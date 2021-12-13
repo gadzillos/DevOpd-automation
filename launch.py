@@ -101,18 +101,8 @@ os.system("touch ~/.ssh/known_hosts")
 os.system(f"ssh-keyscan -H {ip2} >> ~/.ssh/known_hosts")
 
 #Ansible installation
-terminal_message("Updating system")
-os.system("sudo yum update -y")
-os.system("sudo yum install -y python3-pip")
-os.system("sudo pip3 install --upgrade pip")
-
-terminal_message("Installing Ansible")
-os.system("pip3 install 'ansible==2.9.17'")
-
-terminal_message("Installing git. Clone")
-os.system("ansible --version")
-os.system("sudo yum -y install git")
-os.system("git --version")
+terminal_message("Ansible installation")
+os.system("sudo yum -y install ansible")
 
 # send tar archive to VM2
 terminal_message("sending tar file to VM")
@@ -122,5 +112,5 @@ os.system(f"tar -cf repo.tar . &&" +
 
 # Ansible playbook start
 os.chdir(original_path + "/Ansible")
-os.system("ansible-playbook -i inventory jenkins_node_preparation.yml")
+os.system("ansible-playbook -vvv -i inventory jenkins_node_preparation.yml")
 #os.system("ansible-playbook -i inventory jenkins_job.yml")

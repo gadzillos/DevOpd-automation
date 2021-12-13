@@ -4,7 +4,6 @@
         cd
         mkdir repo_with_keys
         tar -xf repo.tar -C repo_with_keys
-        sudo yum -y update
         sudo yum -y update ca-certificates
         sudo yum -y install epel-release
         sudo yum install -y python3
