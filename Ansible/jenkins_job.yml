@@ -121,7 +121,7 @@
 
   - name: Get the jenkins-cli jarfile from the Jenkins server.
     get_url:
-      url: "http://{{ jenkins_ip_external }}:{{ jenkins_http_port }}{{ jenkins_url_prefix }}/jnlpJars/jenkins-cli.jar"
+      url: "http://{{ jenkins_ip_external }}:{{ jenkins_port }}{{ jenkins_url_prefix }}/jnlpJars/jenkins-cli.jar"
       dest: "{{ jenkins_jar_location }}"
     register: jarfile_get
     until: "'OK' in jarfile_get.msg or '304' in jarfile_get.msg or 'file already exists' in jarfile_get.msg"
