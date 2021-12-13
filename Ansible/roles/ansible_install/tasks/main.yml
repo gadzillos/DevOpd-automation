@@ -9,7 +9,7 @@
         sudo yum -y install epel-release
         sudo yum install -y python3
         sudo yum -y install libselinux-python3
-        sudo yum -y install curl
+        sudo yum -y install curl initscripts
         cd && cd repo_with_keys && sudo python3 add_known_hosts.py
 
       vars:

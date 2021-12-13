@@ -17,7 +17,7 @@
   hosts: jenkins_node
 
   tasks:
-    - name: start playbooktk
+    - name: start job deploy locally
       ansible.builtin.shell: |
         script jenkins_job_output.txt
         cd repo_with_keys/Ansible

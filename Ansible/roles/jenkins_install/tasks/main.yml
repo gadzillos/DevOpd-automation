@@ -1,42 +1,51 @@
 ---
-- name: Add Jenkins Redhat repository and key
-  ansible.builtin.shell: |
-    sudo wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
-    sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key
+- name: Ensure Jenkins repo is installed.
+  get_url:
+    url: "{{ jenkins_repo_url }}"
+    dest: /etc/yum.repos.d/jenkins.repo
+  when: jenkins_repo_url | default(false)
 
-- name: Install java
-  yum:
-    name: java-11-openjdk-devel
+- name: Add Jenkins repo GPG key.
+  rpm_key:
     state: present
-  vars:
-    ansible_python_interpreter: /usr/bin/python
+    key: "{{ jenkins_repo_key_url }}"
+  when: jenkins_repo_url | default(false)
 
-- name: Installing Git. Clone.
-  ansible.builtin.shell: |
-    yum -y install git
-    git --version
-    git clone -b pre_release https://gitlab.com/devops_netcraker/repo.git
-       
-# - name: Download Long Term Jenkins release
-#   get_url:
-#     url: "{{ jenkins_url }}"
-#     dest: /etc/yum.repos.d/jenkins.repo
+- name: Download specific Jenkins version.
+  get_url:
+    url: "{{ jenkins_url }}"
+    dest: "/tmp/jenkins-{{ jenkins_version }}-1.1.noarch.rpm"
+  when: jenkins_version is defined
 
-# - name: Import jenkins key from url
-#   ansible.builtin.rpm_key:
+- name: Check if we downloaded a specific version of Jenkins.
+  stat:
+    path: "/tmp/jenkins-{{ jenkins_version }}-1.1.noarch.rpm"
+  register: specific_version
+  when: jenkins_version is defined
+
+- name: Install our specific version of Jenkins.
+  package:
+    name: "/tmp/jenkins-{{ jenkins_version }}-1.1.noarch.rpm"
+    state: present
+  when: jenkins_version is defined and specific_version.stat.exists
+
+# - name: Install java
+#   yum:
+#     name: java-11-openjdk-devel
 #     state: present
-#     key: "{{ jenkins_key }}"
+#   vars:
+#     ansible_python_interpreter: /usr/bin/python
 
-- name: Install jenkins
-  yum:
+# - name: Installing Git. Clone.
+#   ansible.builtin.shell: |
+#     yum -y install git
+#     git --version
+#     git clone -b pre_release https://gitlab.com/devops_netcraker/repo.git
+       
+- name: Ensure Jenkins is installed.
+  package:
     name: jenkins
-    state: present
-  vars:
-    ansible_python_interpreter: /usr/bin/python
-
-- name: daemon-reload to pick up config changes
-  ansible.builtin.systemd:
-    daemon_reload: yes
+    state: "{{ jenkins_package_state }}"
 
 - name: Start jenkins
   ansible.builtin.systemd:
