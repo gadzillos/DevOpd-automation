@@ -29,9 +29,9 @@
   <concurrentBuild>false</concurrentBuild>
   <builders>
     <org.jenkinsci.plugins.ansible.AnsiblePlaybookBuilder plugin="ansible@1.1">
-      <playbook>/path/to/playbook</playbook>
+      <playbook>docker.yml</playbook>
       <inventory class="org.jenkinsci.plugins.ansible.InventoryPath">
-        <path>/path/to/inv</path>
+        <path>inventory</path>
       </inventory>
       <limit></limit>
       <tags></tags>
