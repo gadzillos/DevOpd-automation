@@ -1,8 +1,8 @@
 ---
 # https://docs.ansible.com/ansible/2.9/modules/jenkins_plugin_module.html
 
-- name: Plugin installation
-  hosts: localhost
+- name: Configuring jenkins
+  hosts: jenkins_node
   vars:
     - jenkins_home: /var/lib/jenkins
     - jenkins_ip_external: 127.0.0.1
@@ -70,6 +70,7 @@
     when: jenkins_init_prefix.changed
     tags: ['skip_ansible_lint']
 
+# TODO: resolve groovy script creation order
   - name: Create custom init scripts directory.
     file:
       path: "{{ jenkins_home }}/init.groovy.d"

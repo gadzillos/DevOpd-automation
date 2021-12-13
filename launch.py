@@ -111,6 +111,8 @@ os.system(f"tar -cf repo.tar . &&" +
           f"rsync --rsh='ssh -i sshVM2.pem' repo.tar azureuser@{ip2}:~ && echo 'rsync done'")
 
 # Ansible playbook start
+terminal_message("Starting ansilbe kenkins_node_preparation.yml on VM2")
 os.chdir(original_path + "/Ansible")
-os.system("ansible-playbook -vvv -i inventory jenkins_node_preparation.yml")
-#os.system("ansible-playbook -i inventory jenkins_job.yml")
+os.system("ansible-playbook -v -i inventory jenkins_node_preparation.yml")
+terminal_message("Starting ansilbe kenkins_job.yml on VM2")
+os.system("ansible-playbook -v -i inventory jenkins_job.yml")
