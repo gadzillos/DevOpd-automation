@@ -22,3 +22,11 @@
         script jenkins_job_output.txt
         cd repo_with_keys/Ansible
         ansible-playbook -vvv -i inventory jenkins_job.yml && exit
+
+- name: Install Wildfly and liferay
+  hosts: wildfly_node
+  
+  roles:
+    name: liferay_wildfly
+    become: true
+    become_user: root

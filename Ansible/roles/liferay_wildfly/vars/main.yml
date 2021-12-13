@@ -1,0 +1,5 @@
+https_uri: https://github.com/liferay/liferay-portal/releases/download/7.1.3-ga4/liferay-ce-portal-wildfly-7.1.3-ga4-20190508171117552.tar.gz
+wildfly_user: wildfly
+wildfly_port: 8080
+server_url: 192.168.11.152
+liferay_home_dir: /opt/
