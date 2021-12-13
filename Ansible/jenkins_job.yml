@@ -7,7 +7,7 @@
     - jenkins_home: /var/lib/jenkins
     - jenkins_ip_external: 127.0.0.1
     - jenkins_port: 8080
-    - jenkins_jar_location: 
+    - jenkins_jar_location: /opt/jenkins-cli.jar
     - jenkins_init_file: /etc/sysconfig/jenkins
     - jenkins_url_prefix: ""
     - jenkins_java_options: -Djenkins.install.runSetupWizard=false
@@ -130,7 +130,7 @@
     check_mode: false
 
   - name: Add User admin to jenkins
-    ansible.builtin.shell: echo 'jenkins.model.Jenkins.instance.securityRealm.createAccount("admin","admin")' | java -jar ~/jenkins-cli.jar -s "http://{{ jenkins_ip_external }}:{{ jenkins_port }}/jenkins/" -auth admin:admin -noKeyAuth groovy = – 
+    ansible.builtin.shell: echo 'jenkins.model.Jenkins.instance.securityRealm.createAccount("admin","admin")' | java -jar {{ jenkins_jar_location }} -s "http://{{ jenkins_ip_external }}:{{ jenkins_port }}/jenkins/" -auth admin:admin -noKeyAuth groovy = – 
 
   - name: Install ansible plugin
     jenkins_plugin:
@@ -141,7 +141,7 @@
       timeout: 1000
 
   - name: Config ansible plugin
-    ansible.builtin.shell: "java -jar ~/jenkins-cli.jar -s http://{{jenkins_ip_external}}:{{jenkins_port}}/jenkins/install-plugin ansible"  
+    ansible.builtin.shell: "java -jar {{ jenkins_jar_location }} -s http://{{jenkins_ip_external}}:{{jenkins_port}}/jenkins/install-plugin ansible"  
     loop:
       - ws-cleanup # Workspace Cleanup
       - workflow-aggregator # Pipeline
@@ -151,10 +151,10 @@
       - ansicolor # AnsiColor
 
   - name: Add docker job to jenkins
-    ansible.builtin.shell: "java -jar ~/jenkins-cli.jar -s http://{{jenkins_ip_external}}:{{jenkins_port}}/jenkins/ create-job Docker_installation < /configd.xml"
+    ansible.builtin.shell: "java -jar {{ jenkins_jar_location }} -s http://{{jenkins_ip_external}}:{{jenkins_port}}/jenkins/ create-job Docker_installation < /configd.xml"
 
   - name: Add wildfly job to jenkins
-    ansible.builtin.shell: "java -jar ~/jenkins-cli.jar -s http://{{jenkins_ip_external}}:{{jenkins_port}}/jenkins/ create-job Wildfly_installation < /configw.xml"
+    ansible.builtin.shell: "java -jar {{ jenkins_jar_location }} -s http://{{jenkins_ip_external}}:{{jenkins_port}}/jenkins/ create-job Wildfly_installation < /configw.xml"
     
   # - name: Trigger remote build
   #   ansible.builtin.shell: |
