@@ -1,4 +1,11 @@
 ---
+- name: Install java
+  yum:
+    name: java-11-openjdk-devel
+    state: present
+  vars:
+    ansible_python_interpreter: /usr/bin/python
+
 - name: Ensure Jenkins repo is installed.
   get_url:
     url: "{{ jenkins_repo_url }}"
@@ -29,19 +36,15 @@
     state: present
   when: jenkins_version is defined and specific_version.stat.exists
 
-# - name: Install java
-#   yum:
-#     name: java-11-openjdk-devel
-#     state: present
-#   vars:
-#     ansible_python_interpreter: /usr/bin/python
-
-# - name: Installing Git. Clone.
-#   ansible.builtin.shell: |
-#     yum -y install git
-#     git --version
-#     git clone -b pre_release https://gitlab.com/devops_netcraker/repo.git
-       
+- name: configure default users
+  template:
+    src: basic-security.groovy.j2
+    dest: "{{ jenkins_home }}/init.groovy.d/basic-security.groovy"
+    owner: "{{ jenkins_process_user }}"
+    group: "{{ jenkins_process_group }}"
+    mode: 0775
+  register: jenkins_users_config
+  
 - name: Ensure Jenkins is installed.
   package:
     name: jenkins
