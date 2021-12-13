@@ -14,7 +14,7 @@
     - jenkins_init_file: /etc/sysconfig/jenkins
     - jenkins_http_port_param: JENKINS_PORT
     - jenkins_java_options_env_var: JENKINS_JAVA_OPTIONS
-    - jenkins_process_user: jenkins
+    - jenkins_process_user: azureuser
     - jenkins_process_group: "{{ jenkins_process_user }}"
     - jenkins_init_changes:
       - option: "JENKINS_ARGS"

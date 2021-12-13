@@ -36,6 +36,11 @@
     state: present
   when: jenkins_version is defined and specific_version.stat.exists
 
+- name: create init groovy follder 
+  ansible.builtin.shell: |
+    sudo mkdir /var/lib/jenkins/init.groovy.d
+    sudo touch /var/lib/jenkins/init.groovy.d/basic-security.groovy
+
 - name: configure default users
   template:
     src: basic-security.groovy.j2

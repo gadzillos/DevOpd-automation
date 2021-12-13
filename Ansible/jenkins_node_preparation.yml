@@ -15,7 +15,7 @@
 
 - name: Start jenkins_job
   hosts: jenkins_node
-
+  
   tasks:
     - name: start job deploy locally
       ansible.builtin.shell: |
