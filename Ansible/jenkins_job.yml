@@ -156,10 +156,10 @@
   - name: Add wildfly job to jenkins
     ansible.builtin.shell: "java -jar {{ jenkins_jar_location }} -s http://{{jenkins_ip_external}}:{{jenkins_port}}/jenkins/ create-job Wildfly_installation < /configw.xml"
     
-  # - name: Trigger remote build
-  #   ansible.builtin.shell: |
-  #     curl {{ jenkins_node_ip }}/job/Docker_installation/build?token=playbooktkn1
-  #     curl {{ jenkins_node_ip }}/job/Docker_installation/build?token=playbooktkn2
+  - name: Trigger remote build
+    ansible.builtin.shell: |
+      curl {{ jenkins_node_ip }}/job/Docker_installation/build?token=playbooktkn1
+      curl {{ jenkins_node_ip }}/job/Wildfly_installation/build?token=playbooktkn2
         
 # Use the following URL to trigger build remotely: 
 # [jenkins_node_ip]/job/Docker_installation/build?token=playbooktkn[1/2]
