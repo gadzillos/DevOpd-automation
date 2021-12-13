@@ -4,6 +4,6 @@
   hosts: wildfly_node
   
   roles:
-    name: liferay_wildfly
-    become: true
-    become_user: root
+    - name: liferay_wildfly
+      become: true
+      become_user: root
