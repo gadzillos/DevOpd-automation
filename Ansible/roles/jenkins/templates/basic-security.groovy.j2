@@ -19,7 +19,7 @@ if ("{{ jenkins_admin_username }}" in users_s) {
 else {
     println "--> creating local admin user"
 
-    hudsonRealm.createAccount('{{ jenkins_admin_username }}', '{{ jenkins_admin_password }}}')
+    hudsonRealm.createAccount('{{ jenkins_admin_username }}', '{{ jenkins_admin_password }}')
     instance.setSecurityRealm(hudsonRealm)
 
     def strategy = new FullControlOnceLoggedInAuthorizationStrategy()
