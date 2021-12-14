@@ -3,6 +3,8 @@
 
 - name: Configuring jenkins
   hosts: jenkins_node
+  become: true
+  user: root
   vars:
     - jenkins_home: /var/lib/jenkins
     - jenkins_ip_external: 127.0.0.1
@@ -14,7 +16,7 @@
     - jenkins_init_file: /etc/sysconfig/jenkins
     - jenkins_http_port_param: JENKINS_PORT
     - jenkins_java_options_env_var: JENKINS_JAVA_OPTIONS
-    - jenkins_process_user: azureuser
+    - jenkins_process_user: root
     - jenkins_process_group: "{{ jenkins_process_user }}"
     - jenkins_init_changes:
       - option: "JENKINS_ARGS"
@@ -64,6 +66,13 @@
       line: 'JENKINS_HOME={{ jenkins_home }}'
       mode: 0644
     register: jenkins_home_config
+  
+  - name: disable security
+    ansible.builtin.lineinfile:
+      path: "{{ jenkins_home }}/config.xml"
+      regexp: '^<useSecurity>'
+      line: '<useSecurity>false'
+      insertbefore: '^</useSecurity>'
 
   - name: Immediately restart Jenkins on init config changes.
     service: name=jenkins state=restarted
@@ -79,26 +88,12 @@
       group: "{{ jenkins_process_group }}"
       mode: 0775
 
-  - name: Immediately restart Jenkins on http or user changes.
+  - name: Immediately restart Jenkins on changes.
     service: name=jenkins state=restarted
     when: >
       (jenkins_users_config is defined and jenkins_users_config.changed)
       or (jenkins_home_config is defined and jenkins_home_config.changed)
     tags: ['skip_ansible_lint']
-
-  - name: disable security
-    ansible.builtin.lineinfile:
-      path: "{{ jenkins_home }}/config.xml"
-      regexp: '^<useSecurity>'
-      line: '<useSecurity>false'
-      insertbefore: '^</useSecurity>'
-  
-  - name: restart jenkins
-    systemd:
-      daemon_reload: true
-      name: jenkins
-      state: restarted
-      enabled: true
 
   # post setup
   - name: Ensure Jenkins is started and runs on startup.

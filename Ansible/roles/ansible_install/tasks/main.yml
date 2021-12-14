@@ -6,7 +6,7 @@
         tar -xf repo.tar -C repo_with_keys
         sudo yum -y update ca-certificates
         sudo yum -y install epel-release
-        sudo yum install -y python3
+        sudo yum -y install python3
         sudo yum -y install libselinux-python3
         sudo yum -y install curl initscripts git
         cd && cd repo_with_keys && sudo python3 add_known_hosts.py

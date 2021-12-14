@@ -7,9 +7,9 @@
 
 - name: Install Jenkins and java
   hosts: jenkins_node
+  become: true
+  user: root
 
   roles:
     - name: jenkins_install
-      become: true
-      become_user: root
 

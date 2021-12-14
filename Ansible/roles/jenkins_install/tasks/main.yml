@@ -38,8 +38,8 @@
 
 - name: create init groovy follder 
   ansible.builtin.shell: |
-    sudo mkdir /var/lib/jenkins/init.groovy.d
-    sudo touch /var/lib/jenkins/init.groovy.d/basic-security.groovy
+    sudo mkdir {{ jenkins_home }}/init.groovy.d
+    sudo touch {{ jenkins_home }}/init.groovy.d/basic-security.groovy
 
 - name: configure default users
   template:
@@ -49,11 +49,23 @@
     group: "{{ jenkins_process_group }}"
     mode: 0775
   register: jenkins_users_config
-  
+
+- name: Ensure script exists
+  ansible.builtin.shell: cat {{ jenkins_home }}/init.groovy.d/basic-security.groovy
+
 - name: Ensure Jenkins is installed.
   package:
     name: jenkins
     state: "{{ jenkins_package_state }}"
+
+- name: configure default users
+  template:
+    src: basic-security.groovy.j2
+    dest: "{{ jenkins_home }}/init.groovy.d/basic-security.groovy"
+    owner: "{{ jenkins_process_user }}"
+    group: "{{ jenkins_process_group }}"
+    mode: 0775
+  register: jenkins_users_config
 
 - name: Start jenkins
   ansible.builtin.systemd:
