@@ -113,3 +113,4 @@ os.system(f"tar -cf repo.tar . &&" +
 # Ansible playbook start
 terminal_message("Starting ansilbe jenkins_node_preparation.yml on VM2")
 os.chdir(original_path + "/Ansible")
+os.system("ansible-playbook -v -i inventory jenkins_node_preparation.yml")
