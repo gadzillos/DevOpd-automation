@@ -52,7 +52,6 @@
       state: restarted
     when: jenkins_init_prefix.changed
     tags: ['skip_ansible_lint']
-    notify: restart jenkins
 
 # TODO: resolve groovy script creation order
   - name: Create custom init scripts directory.
@@ -71,7 +70,6 @@
       (jenkins_users_config is defined and jenkins_users_config.changed)
       or (jenkins_home_config is defined and jenkins_home_config.changed)
     tags: ['skip_ansible_lint']
-    notify: restart jenkins
 
   # post setup
   - name: Ensure Jenkins is started and runs on startup.
@@ -79,7 +77,6 @@
       name: jenkins
       state: started
       enabled: yes
-    notify: check jenkins
 
   - name: Wait for Jenkins to start up before proceeding.
     uri:
