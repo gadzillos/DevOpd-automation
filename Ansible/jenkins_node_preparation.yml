@@ -1,5 +1,5 @@
 ---
-- name: Update system and install ansibe
+- name: Update system and install ansible
   hosts: jenkins_node
 
   roles:
