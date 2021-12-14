@@ -1,0 +1,64 @@
+---
+-
+- name: Create Jenkins updates directory.
+  file:
+    path: "{{ jenkins_home }}/updates"
+    state: directory
+    owner: jenkins
+    group: jenkins
+    mode: 0755
+
+- name: Download current plugin updates from Jenkins update site.
+  get_url:
+    url: "{{ jenkins_updates_url }}/update-center.json"
+    dest: "{{ jenkins_home }}/updates/default.json"
+    owner: jenkins
+    group: jenkins
+    mode: 0440
+  changed_when: false
+  register: get_result
+  until: get_result is success
+  retries: 3
+  delay: 2
+
+- name: Remove first and last line from json file.
+  replace:  # noqa 208
+    path: "{{ jenkins_home }}/updates/default.json"
+    regexp: "1d;$d"
+
+- name: Install Jenkins plugins
+  ansible.builtin.command: >
+    java -jar {{ jenkins_jar_location }} -auth admin:{{ jenkins_admin_password }} -s {{ jenkins_url }} install-plugin {{ item }}
+    creates={{ jenkins_home }}/plugins/{{ item }}.jpi
+  with_items: "{{ jenkins_plugins }}"
+
+- name: Add docker job to jenkins  
+  ansible.builtin.shell: |
+    "java -jar {{ jenkins_jar_location }} -auth admin:{{ jenkins_admin_password }} -s http://{{jenkins_ip_external}}:{{jenkins_port}}/jenkins/ create-job Docker_installation < ../job_docker.xml.j2"
+
+- name: Add wildfly job to jenkins  
+  ansible.builtin.shell: |
+    "java -jar {{ jenkins_jar_location }} -auth admin:{{ jenkins_admin_password }} -s http://{{jenkins_ip_external}}:{{jenkins_port}}/jenkins/ create-job Wildfly_installation < /job_liferay.xml.j2"
+
+
+# - name: Install Jenkins plugins using password.
+#   jenkins_plugin:
+#     name: ansible
+#     version: "{{ item.version | default(omit) }}"
+#     jenkins_home: "{{ jenkins_home }}"
+#     url_username: "{{ jenkins_admin_username }}"
+#     url_password: "{{ jenkins_admin_password }}"
+#     state: present
+#     timeout: "{{ jenkins_plugin_timeout }}"
+#     updates_expiration: "{{ jenkins_plugin_updates_expiration }}"
+#     updates_url: "{{ jenkins_updates_url }}"
+#     url: "http://{{ jenkins_hostname }}:{{ jenkins_port }}{{ jenkins_url_prefix }}"
+#     with_dependencies: "{{ jenkins_plugins_install_dependencies }}"
+#   with_items: "{{ jenkins_plugins }}"
+#   when: jenkins_admin_password | default(false)
+#   notify: restart jenkins
+#   tags: ['skip_ansible_lint']
+#   register: plugin_result
+#   until: plugin_result is success
+#   retries: 3
+#   delay: 2

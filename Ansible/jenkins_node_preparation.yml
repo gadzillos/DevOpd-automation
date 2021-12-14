@@ -11,7 +11,4 @@
   user: root
 
   roles:
-    - name: jenkins_install
-    
-    - name: jenkins_config
-
+    - name: jenkins
