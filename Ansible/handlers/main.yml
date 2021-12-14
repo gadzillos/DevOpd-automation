@@ -1,6 +1,9 @@
 ---
 - name: restart jenkins
-  service: name=jenkins state=restarted
+  debug:
+    msg: "Jenkins service restated"
 
 - name: check jenkins
   service: name=jenkins state=started enabled=yes
+  debug:
+    msg: "Jenkins is started and enabled on startup"
