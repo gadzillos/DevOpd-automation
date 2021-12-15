@@ -1,6 +1,7 @@
 ---
 - name: Docker installation
   hosts: docker_node
+  gather_facts: true
   become: true
   user: root
 

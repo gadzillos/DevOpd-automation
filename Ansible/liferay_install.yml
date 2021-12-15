@@ -2,6 +2,7 @@
 
 - name: Install Wildfly and liferay
   hosts: wildfly_node
+  gather_facts: true
   
   roles:
     - name: liferay_wildfly
