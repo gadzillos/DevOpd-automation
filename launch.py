@@ -110,6 +110,7 @@ terminal_message("sending tar file to VM")
 os.chdir(original_path)
 os.system(f"tar -cf repo.tar . &&" + 
           f"rsync --rsh='ssh -i sshVM2.pem' repo.tar azureuser@{ip2}:~ && echo 'rsync done'")
+os.system("sudo rm -f repo.tar")
 
 # Ansible playbook start
 terminal_message("Starting ansilbe jenkins_node_preparation.yml on VM2")
