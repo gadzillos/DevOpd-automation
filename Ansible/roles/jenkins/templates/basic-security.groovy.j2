@@ -12,7 +12,7 @@ if ("{{ jenkins_admin_username }}" in users_s) {
     println "Admin user already exists - updating password"
 
     def user = hudson.model.User.get('{{ jenkins_admin_username }}');
-    def password = hudson.security.HudsonPrivateSecurityRealm.Details.fromPlainPassword('admin')
+    def password = hudson.security.HudsonPrivateSecurityRealm.Details.fromPlainPassword('{{ jenkins_admin_password }}')
     user.addProperty(password)
     user.save()
 }
