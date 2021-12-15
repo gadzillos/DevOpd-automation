@@ -1,47 +1,8 @@
-  - name: Docker installation
-    hosts: docker_node
+---
+- name: Docker installation
+  hosts: docker_node
+  become: true
+  user: root
 
-    tasks:
-    - name: Install required packages
-      yum:
-        name:
-          - yum-utils
-          - device-mapper-persistent-data
-          - lvm2
-        state: latest
- 
-    - name: Add Docker repo
-      get_url:
-        url: https://download.docker.com/linux/centos/docker-ce.repo
-        dest: /etc/yum.repos.d/docker-ce.repo
- 
-    - name: Install Docker
-      package:
-        name: docker-ce
-        state: latest
- 
-    - name: Start Docker service
-      service:
-        name: docker
-        state: started
-        enabled: yes
-
-    - name: Build container image
-      docker_image:
-        name: Postgresql:v1.0
-        build:
-          path: ./
-          source: build
-        state: present
-
-    - name: Run container 
-      docker_container:
-        name: db1
-        state: present
-        image: Postgresql:v1.0
-        command: sleep infinity
-
-
-    
-
- 
+  roles:
+    - name: docker_postgresql

@@ -30,6 +30,9 @@ jenkins_plugin_timeout: 30
 jenkins_admin_username: admin
 jenkins_admin_password: netcracker
 
+repository_path: /opt/repo_with_keys
+jobs_path: "{{ repository_path }}/Ansible/roles/jenkins/templates/"
+
 jenkins_plugins:
   - ansible
   - ansicolor
