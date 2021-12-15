@@ -46,6 +46,14 @@
     remote_src: yes
     extra_opts: [--strip-components=1]
 
+- name: Download postgres.jar
+  ansible.builtin.command:
+    argv:
+      - curl
+      - "{{ postgresql_jar_uri }}"
+      - -o 
+      - "{{liferay_home_dir}}/wildfly-11.0.0/modules/com/liferay/portal/main/postgresql.jar"
+
 - name: Add liferay portal config
   ansible.builtin.template:
     src: liferay.cfg.j2
@@ -97,10 +105,11 @@
     name: wildfly
     state: started
     enabled: true
+    daemon_reload: true
         
 - name: check if server is up on 8080
   uri:
-    url: http://{{  server_url }}:8080
+    url: http://{{ server_url }}:8080
     return_content: true
     ignore_errors: yes
     register: status_8080

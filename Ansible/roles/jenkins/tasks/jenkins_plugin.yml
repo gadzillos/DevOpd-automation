@@ -32,6 +32,27 @@
     creates={{ jenkins_home }}/plugins/{{ item }}.jpi
   with_items: "{{ jenkins_plugins }}"
 
+- name: Restart jenkins after plugins install
+  service:
+    name: jenkins
+    state: restarted
+
+- name: Wait for Jenkins to start up before proceeding.
+  uri:
+    url: "http://{{ jenkins_ip_external }}:{{ jenkins_port }}{{ jenkins_url_prefix }}/cli/"
+    method: GET
+    return_content: "yes"
+    timeout: 5
+    body_format: raw
+    follow_redirects: "no"
+    status_code: 200,403
+  register: result
+  until: (result.status == 403 or result.status == 200) and (result.content.find("Please wait while") == -1)
+  retries: 60
+  delay: 5
+  changed_when: false
+  check_mode: false
+
 # - name: Install Jenkins plugins using password.
 #   jenkins_plugin:
 #     name: ansible

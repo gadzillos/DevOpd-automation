@@ -1,2 +1,11 @@
 ---
 docker_repo_url: https://download.docker.com/linux/centos/docker-ce.repo
+dockerfile_git: https://gitlab.com/devops_netcraker/repo.git
+git_branch: testing
+git_name: repo
+git_folder: /opt
+image_name: postgresql_docker_image
+container_name: psql_14_container
+
+docker_ports:
+  - 5432

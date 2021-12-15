@@ -8,7 +8,7 @@ After=network.target
 Type=simple
 User=root
 Group=root
-ExecStart=/bin/sh -c " "
+ExecStart=/bin/sh -c "{{ liferay_home_dir }}/wildfly-11.0.0/bin/standalone.sh -b=0.0.0.0 -Djboss.http.port={{ wildfly_port }}"
 Restart=always
 RestartSec=20
 
