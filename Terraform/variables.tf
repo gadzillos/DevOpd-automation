@@ -6,12 +6,12 @@ variable "location" {
 
 variable "resource_group_name" {
   type        = string
-  default     = "WildfyGroup"
+  default     = "Netcracker"
   description = "resource group name"
 }
 
 variable "storage_account_name" {
   type        = string
-  default     = "WildfyStorage"
+  default     = "Netcracker"
   description = "storage account name"
 }
