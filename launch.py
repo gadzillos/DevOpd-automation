@@ -27,6 +27,11 @@ script_path = os.getcwd()
 original_path = script_path
 script_path += "/Terraform"
 
+# fix time issues for terraform
+os.system("sudo yum -y install ntp")
+os.system("sudo timedatectl set-ntp true")
+os.system("timedatectl")
+
 # os.system("sudo yum -y update")
 os.system("sudo yum -y install dnf")
 os.system("sudo yum -y install wget unzip")
