@@ -28,17 +28,17 @@
 
 - name: Install Jenkins plugins
   ansible.builtin.command: >
-    java -jar {{ jenkins_jar_location }} -auth admin:{{ jenkins_admin_password }} -s {{ jenkins_url }} install-plugin {{ item }}
+    java -jar {{ jenkins_jar_location }} -auth admin:{{ jenkins_admin_password }} -s http://{{ jenkins_ip_external }}:{{ jenkins_port }} install-plugin {{ item }}
     creates={{ jenkins_home }}/plugins/{{ item }}.jpi
   with_items: "{{ jenkins_plugins }}"
 
 - name: Add docker job to jenkins  
   ansible.builtin.shell: |
-    "java -jar {{ jenkins_jar_location }} -auth admin:{{ jenkins_admin_password }} -s http://{{jenkins_ip_external}}:{{jenkins_port}}/jenkins/ create-job Docker_installation < ../job_docker.xml.j2"
+    java -jar {{ jenkins_jar_location }} -auth admin:{{ jenkins_admin_password }} -s http://{{jenkins_ip_external}}:{{jenkins_port}} create-job Docker_installation < {{ jobs_path }}job_docker.xml.j2
 
 - name: Add wildfly job to jenkins  
   ansible.builtin.shell: |
-    "java -jar {{ jenkins_jar_location }} -auth admin:{{ jenkins_admin_password }} -s http://{{jenkins_ip_external}}:{{jenkins_port}}/jenkins/ create-job Wildfly_installation < /job_liferay.xml.j2"
+    java -jar {{ jenkins_jar_location }} -auth admin:{{ jenkins_admin_password }} -s http://{{jenkins_ip_external}}:{{jenkins_port}} create-job Wildfly_installation < {{ jobs_path }}job_liferay.xml.j2
 
 
 # - name: Install Jenkins plugins using password.
@@ -61,4 +61,3 @@
 #   register: plugin_result
 #   until: plugin_result is success
 #   retries: 3
-#   delay: 2

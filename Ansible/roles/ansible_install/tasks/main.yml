@@ -1,19 +1,18 @@
 ---
     - name: Prepare CentOS
       ansible.builtin.shell: |
-        cd
-        mkdir repo_with_keys
-        tar -xf repo.tar -C repo_with_keys
-        sudo yum -y update ca-certificates
-        sudo yum -y install epel-release
-        sudo yum -y install python3
-        sudo yum -y install libselinux-python3
-        sudo yum -y install curl initscripts git
-        cd && cd repo_with_keys && sudo python3 add_known_hosts.py
+        mkdir /opt/repo_with_keys
+        tar -xf /home/azureuser/repo.tar -C /opt/repo_with_keys
+        yum -y update ca-certificates
+        yum -y install epel-release
+        yum -y install python3
+        yum -y install libselinux-python3
+        yum -y install curl initscripts git
+        cd /opt/repo_with_keys && python3 add_known_hosts.py
 
       vars:
         ansible_python_interpreter: /usr/bin/python
     
     - name: Ansible installation
       ansible.builtin.shell: |
-        sudo yum -y install ansible
+        yum -y install ansible
