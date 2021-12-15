@@ -34,7 +34,8 @@ os.system("sudo yum -y install wget unzip")
 # Download and unzip terraform to bin
 os.chdir(os.path.expanduser('~'))
 os.system("wget https://releases.hashicorp.com/terraform/1.0.11/terraform_1.0.11_linux_amd64.zip")
-os.system("sudo unzip ./terraform_1.0.11_linux_amd64.zip -d /usr/local/bin/")
+os.system("sudo unzip -u ./terraform_1.0.11_linux_amd64.zip -d /usr/local/bin/")
+os.system("sudo rm -f terraform_1.0.11_linux_amd64.zip")
 os.system("terraform -v")
 
 # Azure installation
