@@ -15,23 +15,3 @@
 
   roles:
     - name: jenkins
-
-# - name: Install docker with postgres
-#   hosts: docker_node
-#   gather_facts: true
-#   become: true
-#   user: root
-
-#   roles:
-#     - name: docker_postgresql
-
-# - name: Install liferay and wildfly
-#   hosts: wildfly_node
-#   gather_facts: true
-#   become: true
-#   user: root
-
-#   roles:
-#     - name: liferay_wildfly
-#       become: true
-#       become_user: root

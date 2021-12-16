@@ -1,33 +1,28 @@
 ---
-    - name: Prepare CentOS
-      ansible.builtin.shell: |
-        mkdir /opt/repo_with_keys
-        tar -xf /home/azureuser/repo.tar -C /opt/repo_with_keys
-        yum -y install ca-certificates
-        yum -y install epel-release
-        yum -y install python3
-        yum -y install libselinux-python3
-        yum -y install curl initscripts git
-        cd /opt/repo_with_keys && python3 add_known_hosts.py
+- name: Prepare CentOS
+  ansible.builtin.shell: |
+    mkdir /opt/repo_with_keys
+    tar -xf /home/azureuser/repo.tar -C /opt/repo_with_keys
+    yum -y install ca-certificates
+    yum -y install epel-release
+    yum -y install python3
+    yum -y install libselinux-python3
+    yum -y install curl initscripts git
+    cd /opt/repo_with_keys && python3 add_known_hosts.p
+  vars:
+    ansible_python_interpreter: /usr/bin/python
 
-      vars:
-        ansible_python_interpreter: /usr/bin/python
-    
-
-    - name: Install dependencies for Ansible 'docker_image'
-      vars:
-        ansible_python_interpreter: /usr/bin/python
-
-      tasks:
-      - name: Install pip
-        yum:
-          name: python-pip
-
-      - name: Install docker-py
-        pip: 
-          name: docker-py
-
-
-    - name: Ansible installation
-      ansible.builtin.shell: |
-        yum -y install ansible
+- name: Install dependencies for Ansible 'docker_image'
+  vars:
+    ansible_python_interpreter: /usr/bin/pytho
+  tasks:
+  - name: Install pip
+    yum:
+      name: python-pi
+  - name: Install docker-py
+    pip: 
+      name: docker-p
+      
+- name: Ansible installation
+  ansible.builtin.shell: |
+    yum -y install ansible
