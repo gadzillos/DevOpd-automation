@@ -8,7 +8,7 @@
     yum -y install python3
     yum -y install libselinux-python3
     yum -y install curl initscripts git
-    cd /opt/repo_with_keys && python3 add_known_hosts.p
+    cd /opt/repo_with_keys && python3 add_known_hosts.py
   vars:
     ansible_python_interpreter: /usr/bin/python
 
