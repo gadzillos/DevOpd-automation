@@ -16,13 +16,16 @@
       - docker-ce
       - docker-ce-cli
       - containerd.io
-      - python-pip
       - curl
     state: latest
+
+- name: Install pip
+  yum:
+    name: python-pip
  
 - name: Install Docker Module for Python
   pip:
-    name: docker-py
+    name: docker
 
 - name: Start Docker service
   service:
@@ -39,15 +42,15 @@
     dest: "{{ git_folder }}/{{ git_name }}"
     version: "{{ git_branch }}"
     clone: yes
+    force: yes
     update: yes
 
 - name: Build container image
-  docker_image:
-    name: "{{ image_name }}"
-    build:
-      path: "{{ dockerfile_path }}"
-      source: build
-    state: present
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  shell: sudo chmod +x builddocker.sh && ./builddocker.sh
+  args:
+    chdir: /opt/repo/Docker
 
 - name: Run container 
   docker_container:
