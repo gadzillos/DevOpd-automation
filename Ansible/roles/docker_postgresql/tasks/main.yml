@@ -2,24 +2,37 @@
 - name: Install required packages
   yum:
     name:
+      - epel-release
+      - ca-certificates
       - yum-utils
       - device-mapper-persistent-data
       - lvm2
       - git
+      - python3
+      - python3-pip
+      - curl
     state: latest
  
 - name: Add Docker repo
   get_url:
     url: "{{ docker_repo_url }}"
     dest: /etc/yum.repos.d/docker-ce.repo
- 
-- name: Install Docker
+
+- name: Install Docker Engine
   package:
     name: 
       - docker-ce
       - docker-ce-cli
+      - containerd.io
     state: latest
- 
+
+- name: verify that Docker Engine is installed correctly
+  ansible.builtin.shell: docker run hello-world
+
+- name: Install Docker Module for Python
+  pip:
+    name: docker
+
 - name: Start Docker service
   service:
     name: docker
@@ -29,7 +42,7 @@
 - name: Clone a github repository
   git:
     repo: "{{ dockerfile_git }}"
-    dest: "{{ git_folder }}"
+    dest: "{{ git_folder }}/{{ git_name }}"
     version: "{{ git_branch }}"
     clone: yes
     update: yes
@@ -37,9 +50,9 @@
 - name: Build container image
   docker_image:
     name: "{{ image_name }}"
+    source: build
     build:
-      path: "{{ git_folder }}/{{ git_name }}"
-      source: build
+      path: "{{ dockerfile_path }}"
     state: present
 
 - name: Run container 
@@ -50,3 +63,6 @@
     exposed_ports: 
       - "{{ docker_ports }}"
     auto_remove: false
+
+- name: list all containers
+  ansible.builtin.shell: docker ps
