@@ -3,7 +3,7 @@
       ansible.builtin.shell: |
         mkdir /opt/repo_with_keys
         tar -xf /home/azureuser/repo.tar -C /opt/repo_with_keys
-        yum -y update ca-certificates
+        yum -y install ca-certificates
         yum -y install epel-release
         yum -y install python3
         yum -y install libselinux-python3

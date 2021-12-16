@@ -6,7 +6,7 @@
 FROM centos:7.9.2009
 
 # update system
-RUN yum -y update
+#RUN yum -y update
 
 # install python
 RUN yum install -y python3

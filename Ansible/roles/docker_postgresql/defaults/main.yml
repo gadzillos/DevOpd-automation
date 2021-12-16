@@ -4,7 +4,7 @@ dockerfile_git: https://gitlab.com/devops_netcraker/repo.git
 git_branch: testing
 git_name: repo
 git_folder: /opt
-dockerfile_path: "{{ git_folder }}/{{ git_name }}/Docker/{{ dockefile_name }}"
+dockerfile_path: "{{ git_folder }}/{{ git_name }}/Docker"
 image_name: postgresql_docker_image
 container_name: psql_14_container
 dockefile_name: Dockerfile

@@ -26,9 +26,6 @@
       - containerd.io
     state: latest
 
-- name: verify that Docker Engine is installed correctly
-  ansible.builtin.shell: docker run hello-world
-
 - name: Install Docker Module for Python
   pip:
     name: docker
@@ -38,6 +35,9 @@
     name: docker
     state: started
     enabled: yes
+
+- name: verify that Docker Engine is installed correctly
+  ansible.builtin.shell: docker run hello-world
 
 - name: Clone a github repository
   git:
