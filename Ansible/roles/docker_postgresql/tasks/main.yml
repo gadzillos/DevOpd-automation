@@ -52,14 +52,10 @@
   args:
     chdir: /opt/repo/Docker
 
-- name: Run container 
-  docker_container:
-    name: "{{ container_name }}"
-    state: present
-    image: "{{ image_name }}"
-    exposed_ports: 
-      - "{{ docker_ports }}"
-    auto_remove: false
+- name: Run container
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  shell: sudo docker run -itd --name postgres_db --privileged docker_psql
 
 - name: list all containers
   ansible.builtin.shell: docker ps
