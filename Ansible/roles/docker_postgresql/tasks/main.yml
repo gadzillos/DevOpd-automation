@@ -1,4 +1,9 @@
 ---
+- name: Add Docker repo
+  get_url:
+    url: "{{ docker_repo_url }}"
+    dest: /etc/yum.repos.d/docker-ce.repo
+
 - name: Install required packages
   yum:
     name:
@@ -8,27 +13,16 @@
       - device-mapper-persistent-data
       - lvm2
       - git
-      - python3
-      - python3-pip
-      - curl
-    state: latest
- 
-- name: Add Docker repo
-  get_url:
-    url: "{{ docker_repo_url }}"
-    dest: /etc/yum.repos.d/docker-ce.repo
-
-- name: Install Docker Engine
-  package:
-    name: 
       - docker-ce
       - docker-ce-cli
       - containerd.io
+      - python-pip
+      - curl
     state: latest
-
+ 
 - name: Install Docker Module for Python
   pip:
-    name: docker
+    name: docker-py
 
 - name: Start Docker service
   service:
@@ -50,9 +44,9 @@
 - name: Build container image
   docker_image:
     name: "{{ image_name }}"
-    source: build
     build:
       path: "{{ dockerfile_path }}"
+      source: build
     state: present
 
 - name: Run container 
