@@ -5,11 +5,11 @@
     shell: /bin/false
     comment: "Wildfly User"
     
-- name: unzip and install java
+- name: Install unzip and java
   yum:
     name: 
        - unzip
-       - java-1.8.0-openjdk
+       - java-1.8.0-openjdk-devel
     state: latest
         
 # - name: check if "Java" is installed
@@ -36,8 +36,7 @@
   ansible.builtin.file:
     path: "{{ liferay_home_dir }}"
     state: directory
-    mode: '0700'
-    become: True
+    mode: 0700
 
 - name: Extract liferay+wildfly bundle archive into liferay home dir
   ansible.builtin.unarchive:
@@ -54,7 +53,7 @@
       - -o 
       - "{{liferay_home_dir}}/wildfly-11.0.0/modules/com/liferay/portal/main/postgresql.jar"
 
-- name: Add liferay portal config
+- name: Create liferay portal config from tempplate and add in setup wizard
   ansible.builtin.template:
     src: liferay.cfg.j2
     dest: "{{liferay_home_dir}}/portal-setup-wizard.properties"
@@ -65,7 +64,6 @@
     src: wildfly.service.j2
     dest: /etc/systemd/system/wildfly.service
     mode: 0744
-    become: True
 
 # - name: Add admin user to WildFly
 #   shell: "/opt/wildfly/bin/add-user.sh {{admin_username}} {{admin_password}}"
@@ -107,20 +105,23 @@
     url: "http://{{ server_url }}:8080"
     return_content: true
     ignore_errors: yes
-    register: status_8080
-
-- name: check if server is up on 8080
-  uri:
-    url: "http://{{ server_url }}:8080"
-    method: GET
-    return_content: "yes"
     timeout: 5
     body_format: raw
-    follow_redirects: "no"
-    status_code: 200,403
-  register: result
-  until: (result.status == 403 or result.status == 200) and (result.content.find("Please wait while") == -1)
-  retries: 60
+  retries: 15
   delay: 5
-  changed_when: false
-  check_mode: false
+
+# - name: check if server is up on 8080
+#   uri:
+#     url: "http://{{ server_url }}:8080"
+#     method: GET
+#     return_content: "yes"
+#     timeout: 5
+#     body_format: raw
+#     follow_redirects: "no"
+#     status_code: 200,403
+#   register: result
+#   until: (result.status == 403 or result.status == 200) and (result.content.find("Please wait while") == -1)
+#   retries: 60
+#   delay: 5
+#   changed_when: false
+#   check_mode: false

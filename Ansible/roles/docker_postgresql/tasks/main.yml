@@ -46,15 +46,11 @@
     update: yes
 
 - name: Build container image
-  vars:
-    ansible_python_interpreter: /usr/bin/python3
   shell: sudo chmod +x builddocker.sh && ./builddocker.sh
   args:
     chdir: /opt/repo/Docker
 
 - name: Run container
-  vars:
-    ansible_python_interpreter: /usr/bin/python3
   shell: sudo docker run -itd --name postgres_db --privileged docker_psql
 
 - name: list all containers

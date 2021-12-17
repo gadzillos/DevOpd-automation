@@ -39,8 +39,8 @@ resource "azurerm_subnet" "myterraformsubnet" {
 }
 
 # Create public IPs
-resource "azurerm_public_ip" "VM3_public_ip" {
-  name                = "myPublicIP3"
+resource "azurerm_public_ip" "VM1_public_ip" {
+  name                = "myPublicIP1"
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
   allocation_method   = "Static"
@@ -49,8 +49,8 @@ resource "azurerm_public_ip" "VM3_public_ip" {
     environment = local.environment
   }
 }
-output "ip_3" {
-  value = azurerm_public_ip.VM3_public_ip.ip_address
+output "ip_1" {
+  value = azurerm_public_ip.VM1_public_ip.ip_address
 }
 
 resource "azurerm_public_ip" "VM2_public_ip" {
@@ -65,6 +65,20 @@ resource "azurerm_public_ip" "VM2_public_ip" {
 }
 output "ip_2" {
   value = azurerm_public_ip.VM2_public_ip.ip_address
+}
+
+resource "azurerm_public_ip" "VM3_public_ip" {
+  name                = "myPublicIP3"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg.name
+  allocation_method   = "Static"
+
+  tags = {
+    environment = local.environment
+  }
+}
+output "ip_3" {
+  value = azurerm_public_ip.VM3_public_ip.ip_address
 }
 
 # Create Network Security Group and rule
@@ -112,6 +126,7 @@ resource "azurerm_network_interface" "Nic1" {
     name                          = "nicConfig1"
     subnet_id                     = azurerm_subnet.myterraformsubnet.id
     private_ip_address_allocation = "Dynamic"
+    public_ip_address_id          = azurerm_public_ip.VM1_public_ip.id
   }
 
   tags = {
@@ -377,6 +392,13 @@ resource "local_file" "VM1privateip_file" {
   file_permission      = "600"
   directory_permission = "700"
   content              = azurerm_network_interface.Nic1.private_ip_address
+}
+
+resource "local_file" "VM1publicip_file" {
+  filename             = pathexpand("../VM1publicip.txt")
+  file_permission      = "600"
+  directory_permission = "700"
+  content              = azurerm_public_ip.VM1_public_ip.ip_address
 }
 
 resource "local_file" "VM2publicip_file" {
