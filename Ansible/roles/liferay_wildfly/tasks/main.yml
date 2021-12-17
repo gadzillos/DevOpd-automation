@@ -100,16 +100,6 @@
     enabled: true
     daemon_reload: true
         
-- name: check if server is up on 8080
-  uri:
-    url: "http://{{ server_url }}:8080"
-    return_content: true
-    ignore_errors: yes
-    timeout: 5
-    body_format: raw
-  retries: 15
-  delay: 5
-
 # - name: check if server is up on 8080
 #   uri:
 #     url: "http://{{ server_url }}:8080"
