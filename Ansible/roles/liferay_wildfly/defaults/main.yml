@@ -7,7 +7,6 @@ liferay_home_dir: /opt
 # https://jdbc.postgresql.org/download.html
 postgresql_jar_uri: https://jdbc.postgresql.org/download/postgresql-42.3.1.jar
 
-docker_node_ip: 
 liferay_db_user: docker
 liferay_db_password: docker
-liferay_db_name: psql_14_db
+liferay_db_name: docker

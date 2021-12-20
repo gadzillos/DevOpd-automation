@@ -9,7 +9,7 @@ FROM centos:7.9.2009
 #RUN yum -y update
 
 # install python
-RUN yum install -y python3
+RUN yum install -y python3 sudo
 
 # Install the repository RPM:
 RUN yum install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
@@ -18,12 +18,13 @@ RUN yum install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x
 RUN yum install -y postgresql14-server postgresql14-contrib 
 
 # Enable postgresql-14.service startup
-#RUN systemctl enable postgresql-14.service
+RUN systemctl enable postgresql-14.service
 
 # Add systemctl support through script
-COPY systemctl.py /usr/bin/systemctl
-RUN chmod a+x /usr/bin/systemctl
+#COPY systemctl.py /usr/bin/systemctl
+#RUN chmod a+x /usr/bin/systemctl
 
+# Add startup script
 COPY startup.sh /opt/
 RUN chmod a+x /opt/startup.sh
 
@@ -48,4 +49,4 @@ VOLUME  ["/etc/postgresql", "/var/log/postgresql", "/var/lib/postgresql"]
 
 # Set the default command to run when starting the container
 # loads postgresql-14.service
-CMD /usr/bin/systemctl
+CMD /opt/startup.sh

@@ -1,7 +1,7 @@
 ---
 docker_repo_url: https://download.docker.com/linux/centos/docker-ce.repo
 dockerfile_git: https://gitlab.com/devops_netcraker/repo.git
-git_branch: testing
+git_branch: vault
 git_name: repo
 git_folder: /opt
 dockerfile_path: "{{ git_folder }}/{{ git_name }}/Docker"

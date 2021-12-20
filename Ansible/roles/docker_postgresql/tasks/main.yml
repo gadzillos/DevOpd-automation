@@ -19,7 +19,7 @@
       - curl
     state: latest
 
-- name: Install pip
+- name: Install pipsuod
   yum:
     name: python-pip
  
@@ -45,13 +45,15 @@
     force: yes
     update: yes
 
+# TODO: add jinja2 templating here
+
 - name: Build container image
-  shell: sudo chmod +x builddocker.sh && ./builddocker.sh
+  shell: sudo chmod a+x builddocker.sh && ./builddocker.sh
   args:
     chdir: /opt/repo/Docker
 
 - name: Run container
-  shell: sudo docker run -itd --name postgres_db --privileged docker_psql
+  shell: sudo chmod a+x run_container.sh && ./run_container.sh
 
 - name: list all containers
   ansible.builtin.shell: docker ps
