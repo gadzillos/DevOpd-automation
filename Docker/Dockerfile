@@ -31,6 +31,8 @@ RUN chmod a+x /opt/startup.sh
 # Initialize a new database cluster
 RUN /usr/pgsql-14/bin/postgresql-14-setup initdb
 
+RUN cd /opt && ./startup.sh
+
 # Run the rest of the commands as the ``postgres`` user created by the ``postgresql14-server``
 USER postgres
 
@@ -49,4 +51,4 @@ VOLUME  ["/etc/postgresql", "/var/log/postgresql", "/var/lib/postgresql"]
 
 # Set the default command to run when starting the container
 # loads postgresql-14.service
-CMD /opt/startup.sh
+CMD /usr/bin/systemctl
