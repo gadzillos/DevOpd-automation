@@ -23,6 +23,12 @@ sudo docker exec -u root -it postgres_db /bin/bash
 su - postgres
 psql
 
+ psql --command "CREATE USER docker WITH SUPERUSER PASSWORD 'docker';"
+createdb -O docker docker
+
+#connection test
+psql -h 127.0.0.1 -p 5432 docker -U docker --password
+
 2) Terraform installation
 
 3) Azure CLI installation

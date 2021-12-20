@@ -11,7 +11,7 @@ resource "azurerm_managed_disk" "database_disk" {
   resource_group_name  = azurerm_resource_group.rg.name
   storage_account_type = "Standard_LRS"
   create_option        = "Empty"
-  disk_size_gb         = "1"
+  disk_size_gb         = "5"
 
   tags = {
     environment = local.environment
@@ -107,6 +107,18 @@ resource "azurerm_network_security_group" "myterraformnsg" {
     protocol                   = "*"
     source_port_range          = "*"
     destination_port_range     = "8080"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+
+  security_rule {
+    name                       = "Docker_psql"
+    priority                   = 1012
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "*"
+    source_port_range          = "*"
+    destination_port_range     = "5432"
     source_address_prefix      = "*"
     destination_address_prefix = "*"
   }

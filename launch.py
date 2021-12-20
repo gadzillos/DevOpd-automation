@@ -4,6 +4,8 @@ import argparse
 import codecs
 import json
 import shutil
+import secrets
+import yaml
 
 
 def terminal_message(message):
@@ -117,7 +119,18 @@ os.system(f"tar -cf repo.tar . &&" +
           f"rsync --rsh='ssh -i sshVM2.pem' repo.tar azureuser@{ip2}:~ && echo 'rsync done'")
 os.system("sudo rm -f repo.tar")
 
+# Create password for Ansible Vault
+os.chdir(original_path + "/Ansible")
+password_length = 12
+password = secrets.token_urlsafe(password_length)
+
+with open("vault_password.txt", "w") as file:
+    file.write(password)
+with open("vault_password.yaml", "w") as file:
+    file.write(yaml.safe_dump({'vault_password': password}))
+
 # Ansible playbook start
 terminal_message("Starting ansilbe jenkins_node_preparation.yml on VM2")
 os.chdir(original_path + "/Ansible")
-os.system("ansible-playbook -v -i inventory jenkins_node_preparation.yml")
+os.system(f"ansible-playbook -v -i inventory jenkins_node_preparation.yml " +
+          f"--vault-password-file vault_password.txt --extra-vars '@vault_password.yaml'")
