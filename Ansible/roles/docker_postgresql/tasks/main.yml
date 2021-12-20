@@ -54,6 +54,8 @@
 
 - name: Run container
   shell: sudo chmod a+x run_container.sh && ./run_container.sh
+  args:
+    chdir: /opt/repo/Docker
 
 - name: list all containers
   ansible.builtin.shell: docker ps
