@@ -21,8 +21,8 @@ RUN yum install -y postgresql14-server postgresql14-contrib
 RUN systemctl enable postgresql-14.service
 
 # Add systemctl support through script
-#COPY systemctl.py /usr/bin/systemctl
-#RUN chmod a+x /usr/bin/systemctl
+COPY systemctl.py /usr/bin/systemctl
+RUN chmod a+x /usr/bin/systemctl
 
 # Add startup script
 COPY startup.sh /opt/
