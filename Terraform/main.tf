@@ -272,7 +272,7 @@ resource "azurerm_linux_virtual_machine" "myterraformvm_1" {
   location              = var.location
   resource_group_name   = azurerm_resource_group.rg.name
   network_interface_ids = [azurerm_network_interface.Nic1.id]
-  size                  = "Standard_D2s_v3"
+  size                  = "Standard_B2s"
 
   os_disk {
     name                 = "VM1disk"
@@ -318,7 +318,7 @@ resource "azurerm_linux_virtual_machine" "myterraformvm_2" {
   location              = var.location
   resource_group_name   = azurerm_resource_group.rg.name
   network_interface_ids = [azurerm_network_interface.Nic2.id]
-  size                  = "Standard_D2s_v3"
+  size                  = "Standard_B2s"
 
   os_disk {
     name                 = "VM2disk"
