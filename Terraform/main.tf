@@ -112,6 +112,18 @@ resource "azurerm_network_security_group" "myterraformnsg" {
   }
 
   security_rule {
+    name                       = "wildfly"
+    priority                   = 1013
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "*"
+    source_port_range          = "*"
+    destination_port_range     = "9990"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+
+  security_rule {
     name                       = "Docker_psql"
     priority                   = 1012
     direction                  = "Inbound"
@@ -260,12 +272,12 @@ resource "azurerm_linux_virtual_machine" "myterraformvm_1" {
   location              = var.location
   resource_group_name   = azurerm_resource_group.rg.name
   network_interface_ids = [azurerm_network_interface.Nic1.id]
-  size                  = "Standard_B1s"
+  size                  = "Standard_A2_v2"
 
   os_disk {
     name                 = "VM1disk"
     caching              = "ReadWrite"
-    storage_account_type = "Standard_LRS"
+    storage_account_type = "StandardSSD_LRS"
   }
 
   source_image_reference {
@@ -306,12 +318,12 @@ resource "azurerm_linux_virtual_machine" "myterraformvm_2" {
   location              = var.location
   resource_group_name   = azurerm_resource_group.rg.name
   network_interface_ids = [azurerm_network_interface.Nic2.id]
-  size                  = "Standard_B1s"
+  size                  = "Standard_A2_v2"
 
   os_disk {
     name                 = "VM2disk"
     caching              = "ReadWrite"
-    storage_account_type = "Standard_LRS"
+    storage_account_type = "StandardSSD_LRS"
   }
 
   source_image_reference {
@@ -345,12 +357,12 @@ resource "azurerm_linux_virtual_machine" "myterraformvm_3" {
   location              = var.location
   resource_group_name   = azurerm_resource_group.rg.name
   network_interface_ids = [azurerm_network_interface.Nic3.id]
-  size                  = "Standard_B1s"
+  size                  = "Standard_A2_v2"
 
   os_disk {
     name                 = "VM3disk"
     caching              = "ReadWrite"
-    storage_account_type = "Standard_LRS"
+    storage_account_type = "StandardSSD_LRS"
   }
 
   source_image_reference {

@@ -82,9 +82,9 @@ def inventory_build():
     with open('../VM1publicip.txt') as f:
         ip1 = f.read()
     
-    inventory = (f"[jenkins_node]\n" + f"jenkins_node ansible_host={ip2} ansible_user=azureuser ansible_ssh_private_key_file=../sshVM2.pem\n\n" +
-                 f"[docker_node]\n" + f"docker_node ansible_host={ip1} ansible_user=azureuser ansible_ssh_private_key_file=../sshVM1.pem\n\n" +
-                 f"[wildfly_node]\n" + f"wildfly_node ansible_host={ip3} ansible_user=azureuser ansible_ssh_private_key_file=../sshVM3.pem\n\n")
+    inventory = (f"jenkins_node ansible_host={ip2} ansible_user=azureuser ansible_ssh_private_key_file=../sshVM2.pem\n\n" +
+                 f"docker_node ansible_host={ip1} ansible_user=azureuser ansible_ssh_private_key_file=../sshVM1.pem\n\n" +
+                 f"wildfly_node ansible_host={ip3} ansible_user=azureuser ansible_ssh_private_key_file=../sshVM3.pem\n\n")
 
     with open('inventory', 'w') as f:
         f.writelines(inventory)

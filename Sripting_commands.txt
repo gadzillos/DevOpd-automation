@@ -27,7 +27,8 @@ psql
 createdb -O docker docker
 
 #connection test
-psql -h 127.0.0.1 -p 5432 docker -U docker --password
+psql -h 127.0.0.1 -U docker -d docker_db
+psql -h 127.0.0.1 -p 5432 docker -U docker 
 
 2) Terraform installation
 
