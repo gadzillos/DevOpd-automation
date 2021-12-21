@@ -12,6 +12,11 @@
     path: "{{ liferay_home }}/standalone/deployments/ROOT.war"
     state: directory
 
+- name: Create folder osgi
+  file:
+    path: "{{ liferay_home }}/osgi"
+    state: directory
+
 - name: Unzip OSGi
   unarchive:
     remote_src: yes
