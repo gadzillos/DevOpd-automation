@@ -1,0 +1,44 @@
+---
+# https://learn.liferay.com/dxp/latest/en/installation-and-upgrades/installing-liferay/installing-liferay-on-an-application-server/installing-on-wildfly.html
+
+- name: Download & Unzip WildFly
+  unarchive:
+    remote_src: yes
+    src: "{{ wildfly_download_link }}"
+    dest: /opt
+
+- name: Unzip the OSGi Dependencies
+  unarchive:
+    remote_src: yes
+    src: "{{ liferay_osgi_link }}"
+    dest: "{{ liferay_home }}"
+
+- name: Create folder /opt/wildfly-23.0.0.Final/standalone/deployments/ROOT.war
+  file:
+    path: "{{ liferay_home }}/standalone/deployments/ROOT.war"
+    state: directory
+
+- name: Modify standalone.xml
+  template:
+    src: standalone.xml.j2
+    dest: "{{ liferay_home }}/standalone/configuration/standalone.xml"
+
+- name: Modify standalone.conf
+  template:
+    src: standalone.conf.j2
+    dest: "{{ liferay_home }}/bin/standalone.xml"
+
+# - name: Setup wizard
+#   template:
+#     src: portal-setup-wizard.properties
+#     dest: /opt/portal-setup-wizard.properties
+
+- name: Create ROOT.war.dodeploy
+  file:
+    path: "{{ liferay_home }}/standalone/deployments/ROOT.war.dodeploy"
+    state: touch
+
+- name: Praise The Sun
+  shell: ./standalone.sh 
+  args:
+    chdir: "{{ liferay_home }}/bin"
