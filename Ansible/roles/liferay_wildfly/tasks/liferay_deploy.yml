@@ -80,7 +80,7 @@
 - name: Modify standalone.conf
   template:
     src: standalone.conf.j2
-    dest: "{{ liferay_home }}/bin/standalone.xml"
+    dest: "{{ liferay_home }}/bin/standalone.conf"
 
 - name: Add admin user to WildFly
   shell: "{{ liferay_home }}/bin/add-user.sh {{ wildfly_user }} {{ wildfly_password }}"
