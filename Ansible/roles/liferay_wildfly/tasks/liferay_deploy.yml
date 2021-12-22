@@ -85,11 +85,6 @@
 - name: Add admin user to WildFly
   shell: "{{ liferay_home }}/bin/add-user.sh {{ wildfly_user }} {{ wildfly_password }}"
 
-# - name: Setup wizard
-#   template:
-#     src: portal-setup-wizard.properties
-#     dest: /opt/portal-setup-wizard.properties
-
 - name: Create ROOT.war.dodeploy
   file:
     path: "{{ liferay_home }}/standalone/deployments/ROOT.war.dodeploy"
