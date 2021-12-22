@@ -129,7 +129,14 @@ with open("vault_password.txt", "w") as file:
 with open("vault_password.yaml", "w") as file:
     file.write(yaml.safe_dump({'vault_password': password}))
 
-# Ansible playbook start
+# os.chdir(original_path + "/Ansible")
+# subprocess.run(
+#         "ansible-vault encrypt --vault-password-file"
+#         " vault_password.txt credentials.yaml",
+#         shell=True)
+
+
+# Ansible playbook start --extra-vars '@credentials.yaml'
 terminal_message("Starting ansilbe jenkins_node_preparation.yml on VM2")
 os.chdir(original_path + "/Ansible")
 os.system(f"ansible-playbook -v -i inventory jenkins_node_preparation.yml " +

@@ -5,17 +5,18 @@
        - epel-release
     state: latest
 
+# openjdk-8-jre-headless  java-11-openjdk-devel
 - name: Install unzip and java, certificates and utilities
   yum:
     name: 
        - ca-certificates
        - unzip
-       - java-11-openjdk-devel
+       - java-1.8.0-openjdk
        - wget 
        - curl
     state: latest
 
 - name: Ensure Java is installed.
   package:
-    name: java-11-openjdk-devel
+    name: java-1.8.0-openjdk
     state: present
