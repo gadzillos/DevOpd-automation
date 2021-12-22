@@ -140,4 +140,4 @@ with open("vault_password.yaml", "w") as file:
 terminal_message("Starting ansilbe jenkins_node_preparation.yml on VM2")
 os.chdir(original_path + "/Ansible")
 os.system(f"ansible-playbook -v -i inventory jenkins_node_preparation.yml " +
-          f"--vault-password-file vault_password.txt --extra-vars '@vault_password.yaml'")
+          f"--vault-password-file vault_password.txt --extra-vars '@vault_password.yaml' --extra-vars 'credentials.yaml'")
