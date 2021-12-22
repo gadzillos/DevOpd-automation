@@ -5,9 +5,10 @@
        - epel-release
     state: latest
 
-- name: Install unzip and java
+- name: Install unzip and java, certificates and utilities
   yum:
     name: 
+       - ca-certificates
        - unzip
        - java-11-openjdk-devel
        - wget 
