@@ -74,7 +74,7 @@
 
 - name: Modify standalone.xml
   template:
-    src: standalone17.xml.j2
+    src: standalone.xml.j2
     dest: "{{ liferay_home }}/standalone/configuration/standalone.xml"
 
 - name: Modify standalone.conf
