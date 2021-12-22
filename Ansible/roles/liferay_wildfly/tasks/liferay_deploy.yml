@@ -1,5 +1,10 @@
 ---
 # https://learn.liferay.com/dxp/latest/en/installation-and-upgrades/installing-liferay/installing-liferay-on-an-application-server/installing-on-wildfly.html
+- name: Download postgresql-42.3.1.jar
+  get_url:
+    url: "{{ postgresql_jar_link }}"
+    dest: /opt
+    mode: 0777
 
 - name: Download & Unzip WildFly
   unarchive:
@@ -16,6 +21,30 @@
   file:
     path: "{{ liferay_home }}/osgi"
     state: directory
+
+- name: Create folder ../modules/com/liferay/portal/main
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - "{{ liferay_home }}/modules/com"
+    - "{{ liferay_home }}/modules/com/liferay"
+    - "{{ liferay_home }}/modules/com/liferay/portal"
+    - "{{ liferay_home }}/modules/com/liferay/portal/main"
+
+- name: Unzip dependences
+  unarchive:
+    remote_src: yes
+    src: "{{ liferay_dependencies_link }}"
+    dest: "{{ liferay_home }}/modules/com/liferay/portal/main"
+
+- name: Move dependences to main
+  shell: "mv {{ liferay_home }}/modules/com/liferay/portal/main/l*/* {{ liferay_home }}/modules/com/liferay/portal/main && rmdir {{ liferay_home }}/modules/com/liferay/portal/main/liferay-ce-portal-dependencies-*"
+
+- name: Create module.xml 
+  template:
+    src: standalone.xml.j2
+    dest: "{{ liferay_home }}/modules/com/liferay/portal/main/module.xml"
 
 - name: Unzip OSGi
   unarchive:
@@ -36,7 +65,7 @@
   ansible.builtin.template:
     src: liferay.cfg.j2
     dest: "{{liferay_home}}/portal-setup-wizard.properties"
-    mode: 0600
+    mode: 0777
     
 - name: Create folder /opt/wildfly-23.0.0.Final/standalone/deployments/ROOT.war
   file:

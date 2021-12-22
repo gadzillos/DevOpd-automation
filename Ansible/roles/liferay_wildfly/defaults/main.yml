@@ -6,11 +6,12 @@ wildfly_user: wildfly
 wildfly_password: netcracker
 
 wildfly_download_link: https://download.jboss.org/wildfly/23.0.0.Final/wildfly-23.0.0.Final.zip
-liferay_war_link: https://github.com/liferay/liferay-portal/releases/download/7.4.3.4-ga4/liferay-ce-portal-7.4.3.4-ga4-20211020095956970.war
-liferay_osgi_link: https://github.com/liferay/liferay-portal/releases/download/7.4.3.4-ga4/liferay-ce-portal-osgi-7.4.3.4-ga4-20211020095956970.zip
+liferay_war_link: https://github.com/liferay/liferay-portal/releases/download/7.3.7-ga8/liferay-ce-portal-7.3.7-ga8-20210610183559721.war
+liferay_osgi_link: https://github.com/liferay/liferay-portal/releases/download/7.3.7-ga8/liferay-ce-portal-osgi-7.3.7-ga8-20210610183559721.zip
+liferay_dependencies_link: https://github.com/liferay/liferay-portal/releases/download/7.3.7-ga8/liferay-ce-portal-dependencies-7.3.7-ga8-20210610183559721.zip
 
 # https://jdbc.postgresql.org/download.html
-postgresql_jar_uri: https://jdbc.postgresql.org/download/postgresql-42.3.1.jar
+postgresql_jar_link: https://jdbc.postgresql.org/download/postgresql-42.3.1.jar
 
 liferay_db_user: docker
 liferay_db_password: docker

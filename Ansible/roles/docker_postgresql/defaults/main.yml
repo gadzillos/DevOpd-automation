@@ -5,8 +5,8 @@ git_branch: vault
 git_name: repo
 git_folder: /opt
 dockerfile_path: "{{ git_folder }}/{{ git_name }}/Docker"
-image_name: postgresql_docker_image
-container_name: psql_14_container
+image_name: docker_db
+container_name: docker_psql
 dockefile_name: Dockerfile
 
 docker_ports:
