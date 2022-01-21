@@ -1,0 +1,12 @@
+---
+# Install Java and Jenkins
+- include_tasks: jenkins_install.yml
+
+# Prepare Jenkins
+- include_tasks: jenkins_config.yml
+
+# Install Ansible plugin for Jenkins
+- include_tasks: jenkins_plugin.yml
+
+# Create Jenkins jobs
+- include_tasks: load_jobs.yml

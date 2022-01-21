@@ -1,0 +1,73 @@
+---
+- name: Install java
+  yum:
+    name: java-11-openjdk-devel
+    state: present
+  vars:
+    ansible_python_interpreter: /usr/bin/python
+
+- name: Ensure Jenkins repo is installed.
+  get_url:
+    url: "{{ jenkins_repo_url }}"
+    dest: /etc/yum.repos.d/jenkins.repo
+  when: jenkins_repo_url | default(false)
+
+- name: Add Jenkins repo GPG key.
+  rpm_key:
+    state: present
+    key: "{{ jenkins_repo_key_url }}"
+  when: jenkins_repo_url | default(false)
+
+- name: Download specific Jenkins version.
+  get_url:
+    url: "{{ jenkins_url }}"
+    dest: "/tmp/jenkins-{{ jenkins_version }}-1.1.noarch.rpm"
+  when: jenkins_version is defined
+
+- name: Check if we downloaded a specific version of Jenkins.
+  stat:
+    path: "/tmp/jenkins-{{ jenkins_version }}-1.1.noarch.rpm"
+  register: specific_version
+  when: jenkins_version is defined
+
+- name: Install our specific version of Jenkins.
+  package:
+    name: "/tmp/jenkins-{{ jenkins_version }}-1.1.noarch.rpm"
+    state: present
+  when: jenkins_version is defined and specific_version.stat.exists
+
+- name: create init groovy follder 
+  ansible.builtin.shell: |
+    sudo mkdir {{ jenkins_home }}/init.groovy.d
+    sudo touch {{ jenkins_home }}/init.groovy.d/basic-security.groovy
+
+- name: configure default users
+  template:
+    src: basic-security.groovy.j2
+    dest: "{{ jenkins_home }}/init.groovy.d/basic-security.groovy"
+    owner: "{{ jenkins_process_user }}"
+    group: "{{ jenkins_process_group }}"
+    mode: 0775
+  register: jenkins_users_config
+
+- name: Ensure script exists
+  ansible.builtin.shell: cat {{ jenkins_home }}/init.groovy.d/basic-security.groovy
+
+- name: Ensure Jenkins is installed.
+  package:
+    name: jenkins
+    state: "{{ jenkins_package_state }}"
+
+- name: configure default users
+  template:
+    src: basic-security.groovy.j2
+    dest: "{{ jenkins_home }}/init.groovy.d/basic-security.groovy"
+    owner: "{{ jenkins_process_user }}"
+    group: "{{ jenkins_process_group }}"
+    mode: 0775
+  register: jenkins_users_config
+
+- name: Start jenkins
+  ansible.builtin.systemd:
+    name: jenkins
+    state: started

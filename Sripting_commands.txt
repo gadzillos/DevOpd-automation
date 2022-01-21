@@ -2,6 +2,34 @@
 
 1) docker installation
 
+ sudo yum -y install -y yum-utils
+
+ sudo yum-config-manager \
+    --add-repo \
+    https://download.docker.com/linux/centos/docker-ce.repo
+
+sudo yum -y install docker-ce docker-ce-cli containerd.io
+service docker start
+systemctl enable docker.service
+
+
+# sudo docker build . -t postgresql
+1.1)
+sudo docker build . -t postgresql
+sudo docker run -itd --name docker_db --privileged postgresql
+sudo docker ps
+sudo docker exec -u root -it docker_db /bin/bash
+#systemctl start postgresql-14.service
+su - postgres
+psql
+
+ psql --command "CREATE USER docker WITH SUPERUSER PASSWORD 'docker';"
+createdb -O docker docker
+
+#connection test
+psql -h 127.0.0.1 -U docker -d docker_db
+psql -h 127.0.0.1 -p 5432 docker -U docker 
+
 2) Terraform installation
 
 3) Azure CLI installation

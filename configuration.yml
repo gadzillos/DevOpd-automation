@@ -1,0 +1,10 @@
+---
+# Database
+liferay_db_password: docker
+liferay_db_name: docker
+
+# Jenkins
+jenkins_admin_username: admin
+jenkins_admin_password: netcracker
+
+# Liferay

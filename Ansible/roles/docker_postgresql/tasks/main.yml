@@ -1,0 +1,61 @@
+---
+- name: Add Docker repo
+  get_url:
+    url: "{{ docker_repo_url }}"
+    dest: /etc/yum.repos.d/docker-ce.repo
+
+- name: Install required packages
+  yum:
+    name:
+      - epel-release
+      - ca-certificates
+      - yum-utils
+      - device-mapper-persistent-data
+      - lvm2
+      - git
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - curl
+    state: latest
+
+- name: Install pipsuod
+  yum:
+    name: python-pip
+ 
+- name: Install Docker Module for Python
+  pip:
+    name: docker
+
+- name: Start Docker service
+  service:
+    name: docker
+    state: started
+    enabled: yes
+
+- name: verify that Docker Engine is installed correctly
+  ansible.builtin.shell: docker run hello-world
+
+- name: Clone a github repository
+  git:
+    repo: "{{ dockerfile_git }}"
+    dest: "{{ git_folder }}/{{ git_name }}"
+    version: "{{ git_branch }}"
+    clone: yes
+    force: yes
+    update: yes
+
+# TODO: add jinja2 templating here
+
+- name: Build container image
+  shell: sudo chmod a+x builddocker.sh && ./builddocker.sh
+  args:
+    chdir: /opt/repo/Docker
+
+- name: Run container
+  shell: sudo chmod a+x run_container.sh && ./run_container.sh
+  args:
+    chdir: /opt/repo/Docker
+
+- name: list all containers
+  ansible.builtin.shell: docker ps

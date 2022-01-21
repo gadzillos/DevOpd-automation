@@ -1,0 +1,110 @@
+---
+  - name: Check if jenkins_init_file exists.
+    stat:
+      path: "{{ jenkins_init_file }}"
+    register: jenkins_init_file_stat
+
+  - name: Ensure jenkins_init_file exists.
+    file:
+      path: "{{ jenkins_init_file }}"
+      state: touch
+      mode: 0644
+    when: not jenkins_init_file_stat.stat.exists
+
+  - name: Modify variables in init file.
+    lineinfile:
+      dest: "{{ jenkins_init_file }}"
+      insertafter: '^{{ item.option }}='
+      regexp: '^{{ item.option }}=\"\${{ item.option }} '
+      line: '{{ item.option }}="${{ item.option }} {{ item.value }}"'
+      state: present
+      mode: 0644
+    with_items: "{{ jenkins_init_changes }}"
+    register: jenkins_init_prefix
+
+  - name: Ensure jenkins_home {{ jenkins_home }} exists.
+    file:
+      path: "{{ jenkins_home }}"
+      state: directory
+      owner: jenkins
+      group: jenkins
+      mode: u+rwx
+      follow: true
+
+  - name: Set the Jenkins home directory.
+    lineinfile:
+      dest: "{{ jenkins_init_file }}"
+      regexp: '^JENKINS_HOME=.*'
+      line: 'JENKINS_HOME={{ jenkins_home }}'
+      mode: 0644
+    register: jenkins_home_config
+  
+  - name: disable security
+    ansible.builtin.lineinfile:
+      path: "{{ jenkins_home }}/config.xml"
+      regexp: '^<useSecurity>'
+      line: '<useSecurity>false'
+      insertbefore: '^</useSecurity>'
+
+  - name: Immediately restart Jenkins on init config changes.
+    service:
+      name: jenkins
+      state: restarted
+    when: jenkins_init_prefix.changed
+    tags: ['skip_ansible_lint']
+
+# TODO: resolve groovy script creation order
+  - name: Create custom init scripts directory.
+    file:
+      path: "{{ jenkins_home }}/init.groovy.d"
+      state: directory
+      owner: "{{ jenkins_process_user }}"
+      group: "{{ jenkins_process_group }}"
+      mode: 0775
+
+  - name: Immediately restart Jenkins on changes.
+    service:
+      name: jenkins
+      state: restarted
+    when: >
+      (jenkins_users_config is defined and jenkins_users_config.changed)
+      or (jenkins_home_config is defined and jenkins_home_config.changed)
+    tags: ['skip_ansible_lint']
+
+  # post setup
+  - name: Ensure Jenkins is started and runs on startup.
+    service:
+      name: jenkins
+      state: started
+      enabled: yes
+
+  - name: Wait for Jenkins to start up before proceeding.
+    uri:
+      url: "http://{{ jenkins_ip_external }}:{{ jenkins_port }}{{ jenkins_url_prefix }}/cli/"
+      method: GET
+      return_content: "yes"
+      timeout: 5
+      body_format: raw
+      follow_redirects: "no"
+      status_code: 200,403
+    register: result
+    until: (result.status == 403 or result.status == 200) and (result.content.find("Please wait while") == -1)
+    retries: 60
+    delay: 5
+    changed_when: false
+    check_mode: false
+
+  - name: Get the jenkins-cli jarfile from the Jenkins server.
+    get_url:
+      url: "http://{{ jenkins_ip_external }}:{{ jenkins_port }}{{ jenkins_url_prefix }}/jnlpJars/jenkins-cli.jar"
+      dest: "{{ jenkins_jar_location }}"
+    register: jarfile_get
+    until: "'OK' in jarfile_get.msg or '304' in jarfile_get.msg or 'file already exists' in jarfile_get.msg"
+    retries: 5
+    delay: 10
+    check_mode: false
+  
+  - name: Remove Jenkins security init scripts after first startup.
+    file:
+      path: "{{ jenkins_home }}/init.groovy.d/basic-security.groovy"
+      state: absent

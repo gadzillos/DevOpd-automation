@@ -1,0 +1,42 @@
+---
+jenkins_home: /var/lib/jenkins
+jenkins_ip_external: 127.0.0.1
+jenkins_port: 8080
+jenkins_jar_location: /opt/jenkins-cli.jar
+jenkins_init_file: /etc/sysconfig/jenkins
+jenkins_url_prefix: ""
+jenkins_java_options: -Djenkins.install.runSetupWizard=false
+jenkins_http_port_param: JENKINS_PORT
+jenkins_java_options_env_var: JENKINS_JAVA_OPTIONS
+jenkins_process_user: root
+jenkins_process_group: "{{ jenkins_process_user }}"
+jenkins_init_changes:
+  - option: "JENKINS_ARGS"
+    value: "--prefix={{ jenkins_url_prefix }}"
+  - option: "{{ jenkins_java_options_env_var }}"
+    value: "{{ jenkins_java_options }}"
+
+jenkins_package_state: present
+
+jenkins_version: 2.324
+jenkins_url: https://get.jenkins.io/redhat/jenkins-2.324-1.1.noarch.rpm
+jenkins_key: https://get.jenkins.io/redhat/jenkins.io.key
+jenkins_repo_url: https://pkg.jenkins.io/redhat-stable/jenkins.repo
+jenkins_repo_key_url: https://pkg.jenkins.io/redhat-stable/jenkins.io.key
+
+jenkins_updates_url: "https://updates.jenkins.io"
+jenkins_plugin_updates_expiration: 86400
+jenkins_plugin_timeout: 30
+jenkins_admin_username: admin
+jenkins_admin_password: netcracker
+
+repository_path: /opt/repo_with_keys
+jobs_path: "{{ repository_path }}/Ansible/roles/jenkins/templates/"
+
+jenkins_plugins:
+  - ansible
+  - ansicolor
+  - git
+  - job-dsl
+  - configuration-as-code
+  - workflow-aggregator

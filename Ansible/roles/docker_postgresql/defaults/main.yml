@@ -1,0 +1,13 @@
+---
+docker_repo_url: https://download.docker.com/linux/centos/docker-ce.repo
+dockerfile_git: https://gitlab.com/devops_netcraker/repo.git
+git_branch: vault
+git_name: repo
+git_folder: /opt
+dockerfile_path: "{{ git_folder }}/{{ git_name }}/Docker"
+image_name: docker_db
+container_name: docker_psql
+dockefile_name: Dockerfile
+
+docker_ports:
+  - 5432

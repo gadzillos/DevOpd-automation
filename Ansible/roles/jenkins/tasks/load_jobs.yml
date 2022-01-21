@@ -1,0 +1,8 @@
+---
+- name: Add docker job to jenkins  
+  ansible.builtin.shell: |
+    java -jar {{ jenkins_jar_location }} -auth admin:{{ jenkins_admin_password }} -s http://{{jenkins_ip_external}}:{{jenkins_port}} create-job Docker_installation < {{ jobs_path }}job_docker.xml.j2
+
+- name: Add wildfly job to jenkins  
+  ansible.builtin.shell: |
+    java -jar {{ jenkins_jar_location }} -auth admin:{{ jenkins_admin_password }} -s http://{{jenkins_ip_external}}:{{jenkins_port}} create-job Wildfly_installation < {{ jobs_path }}job_liferay.xml.j2

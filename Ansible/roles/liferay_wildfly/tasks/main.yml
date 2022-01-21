@@ -1,0 +1,6 @@
+---
+- include_tasks: java_install.yml
+
+#- include_tasks: liferay_deploy.yml
+
+- include_tasks: bundle_install.yml

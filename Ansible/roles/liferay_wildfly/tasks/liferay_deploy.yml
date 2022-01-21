@@ -1,0 +1,120 @@
+---
+# https://learn.liferay.com/dxp/latest/en/installation-and-upgrades/installing-liferay/installing-liferay-on-an-application-server/installing-on-wildfly.html
+- name: Download postgresql-42.3.1.jar
+  get_url:
+    url: "{{ postgresql_jar_link }}"
+    dest: /opt
+    mode: 0777
+
+- name: Download & Unzip WildFly
+  unarchive:
+    remote_src: yes
+    src: "{{ wildfly_download_link }}"
+    dest: /opt
+
+- name: Create folder /opt/wildfly-23.0.0.Final/standalone/deployments/ROOT.war
+  file:
+    path: "{{ liferay_home }}/standalone/deployments/ROOT.war"
+    state: directory
+
+- name: Create folder osgi
+  file:
+    path: "{{ liferay_home }}/osgi"
+    state: directory
+
+- name: Create folder ../modules/com/liferay/portal/main
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - "{{ liferay_home }}/modules/com"
+    - "{{ liferay_home }}/modules/com/liferay"
+    - "{{ liferay_home }}/modules/com/liferay/portal"
+    - "{{ liferay_home }}/modules/com/liferay/portal/main"
+
+- name: Unzip dependences
+  unarchive:
+    remote_src: yes
+    src: "{{ liferay_dependencies_link }}"
+    dest: "{{ liferay_home }}/modules/com/liferay/portal/main"
+
+- name: Move dependences to main
+  shell: "mv {{ liferay_home }}/modules/com/liferay/portal/main/l*/* {{ liferay_home }}/modules/com/liferay/portal/main && rmdir {{ liferay_home }}/modules/com/liferay/portal/main/liferay-ce-portal-dependencies-*"
+
+- name: Create module.xml 
+  template:
+    src: standalone.xml.j2
+    dest: "{{ liferay_home }}/modules/com/liferay/portal/main/module.xml"
+
+- name: Unzip OSGi
+  unarchive:
+    remote_src: yes
+    src: "{{ liferay_osgi_link }}"
+    dest: "{{ liferay_home }}/osgi"
+
+- name: Exctract files in unzipped folder and remove folder
+  shell: "mv {{ liferay_home }}/osgi/liferay-ce-portal-osgi-*/* {{ liferay_home }}/osgi && rm -rf {{ liferay_home }}/osgi/liferay-ce-portal-osgi-*"
+
+- name: Unarchive WAR file
+  unarchive:
+    remote_src: yes
+    src: "{{ liferay_war_link }}"
+    dest: "{{ liferay_home }}/standalone/deployments/ROOT.war"
+
+- name: Add liferay portal config
+  ansible.builtin.template:
+    src: liferay.cfg.j2
+    dest: "{{liferay_home}}/portal-setup-wizard.properties"
+    mode: 0777
+    
+- name: Create folder /opt/wildfly-23.0.0.Final/standalone/deployments/ROOT.war
+  file:
+    path: "{{ liferay_home }}/standalone/deployments/ROOT.war"
+    state: directory
+
+- name: Modify standalone.xml
+  template:
+    src: standalone.xml.j2
+    dest: "{{ liferay_home }}/standalone/configuration/standalone.xml"
+
+- name: Modify standalone.conf
+  template:
+    src: standalone.conf.j2
+    dest: "{{ liferay_home }}/bin/standalone.conf"
+
+- name: Add admin user to WildFly
+  shell: "{{ liferay_home }}/bin/add-user.sh {{ wildfly_user }} {{ wildfly_password }}"
+
+- name: Create ROOT.war.dodeploy
+  file:
+    path: "{{ liferay_home }}/standalone/deployments/ROOT.war.dodeploy"
+    state: touch
+
+- name: Create wildfly service description file for systemd
+  ansible.builtin.template:
+    src: wildfly.service.j2
+    dest: /etc/systemd/system/wildfly.service
+    mode: 0744
+
+- name: Enable and start systemd service
+  ansible.builtin.systemd:
+    name: wildfly
+    state: started
+    daemon_reload: True
+    enabled: True
+
+- name: Wait for WildFly to start up before proceeding.
+  uri:
+    url: "http://127.0.0.1:9990"
+    method: GET
+    return_content: "yes"
+    timeout: 5
+    body_format: raw
+    follow_redirects: "no"
+    status_code: 200,403
+  register: result
+  until: (result.status == 403 or result.status == 200) and (result.content.find("Please wait while") == -1)
+  retries: 60
+  delay: 5
+  changed_when: false
+  check_mode: false

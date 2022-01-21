@@ -1,0 +1,22 @@
+---
+- name: Install epel-release
+  yum:
+    name: 
+       - epel-release
+    state: latest
+
+# openjdk-8-jre-headless  java-11-openjdk-devel
+- name: Install unzip and java, certificates and utilities
+  yum:
+    name: 
+       - ca-certificates
+       - unzip
+       - java-1.8.0-openjdk
+       - wget 
+       - curl
+    state: latest
+
+- name: Ensure Java is installed.
+  package:
+    name: java-1.8.0-openjdk
+    state: present

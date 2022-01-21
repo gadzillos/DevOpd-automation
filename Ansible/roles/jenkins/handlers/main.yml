@@ -1,0 +1,11 @@
+---
+- name: restart jenkins
+  service:
+    name: jenkins
+    state: restart
+
+- name: check jenkins
+  service:
+    name: jenkins
+    state: started
+    enabled: yes

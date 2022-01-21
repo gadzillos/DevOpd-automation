@@ -1,0 +1,37 @@
+---
+- name: Update system and install ansible
+  hosts: jenkins_node
+  become: true
+  user: root
+
+  roles:
+    - name: ansible_install
+
+- name: Install Jenkins and java
+  hosts: jenkins_node
+  gather_facts: true
+  become: true
+  user: root
+
+  roles:
+    - name: jenkins
+
+- name: Docker installation
+  hosts: docker_node
+  gather_facts: true
+  become: true
+  user: root
+  vars: 
+    ansible_python_interpreter: /usr/bin/python
+
+  roles:
+    - name: docker_postgresql
+
+- name: Install Wildfly and liferay
+  hosts: wildfly_node
+  gather_facts: true
+  
+  roles:
+    - name: liferay_wildfly
+      become: true
+      become_user: root

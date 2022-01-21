@@ -11,7 +11,7 @@ resource "azurerm_managed_disk" "database_disk" {
   resource_group_name  = azurerm_resource_group.rg.name
   storage_account_type = "Standard_LRS"
   create_option        = "Empty"
-  disk_size_gb         = "1"
+  disk_size_gb         = "5"
 
   tags = {
     environment = local.environment
@@ -39,8 +39,8 @@ resource "azurerm_subnet" "myterraformsubnet" {
 }
 
 # Create public IPs
-resource "azurerm_public_ip" "VM3_public_ip" {
-  name                = "myPublicIP3"
+resource "azurerm_public_ip" "VM1_public_ip" {
+  name                = "myPublicIP1"
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
   allocation_method   = "Static"
@@ -49,8 +49,8 @@ resource "azurerm_public_ip" "VM3_public_ip" {
     environment = local.environment
   }
 }
-output "ip_3" {
-  value = azurerm_public_ip.VM3_public_ip.ip_address
+output "ip_1" {
+  value = azurerm_public_ip.VM1_public_ip.ip_address
 }
 
 resource "azurerm_public_ip" "VM2_public_ip" {
@@ -65,6 +65,20 @@ resource "azurerm_public_ip" "VM2_public_ip" {
 }
 output "ip_2" {
   value = azurerm_public_ip.VM2_public_ip.ip_address
+}
+
+resource "azurerm_public_ip" "VM3_public_ip" {
+  name                = "myPublicIP3"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg.name
+  allocation_method   = "Static"
+
+  tags = {
+    environment = local.environment
+  }
+}
+output "ip_3" {
+  value = azurerm_public_ip.VM3_public_ip.ip_address
 }
 
 # Create Network Security Group and rule
@@ -85,6 +99,42 @@ resource "azurerm_network_security_group" "myterraformnsg" {
     destination_address_prefix = "*"
   }
 
+  security_rule {
+    name                       = "jenkins"
+    priority                   = 1011
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "*"
+    source_port_range          = "*"
+    destination_port_range     = "8080"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+
+  security_rule {
+    name                       = "wildfly"
+    priority                   = 1013
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "*"
+    source_port_range          = "*"
+    destination_port_range     = "9990"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+
+  security_rule {
+    name                       = "Docker_psql"
+    priority                   = 1012
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "*"
+    source_port_range          = "*"
+    destination_port_range     = "5432"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+
   tags = {
     environment = local.environment
   }
@@ -100,11 +150,17 @@ resource "azurerm_network_interface" "Nic1" {
     name                          = "nicConfig1"
     subnet_id                     = azurerm_subnet.myterraformsubnet.id
     private_ip_address_allocation = "Dynamic"
+    public_ip_address_id          = azurerm_public_ip.VM1_public_ip.id
   }
 
   tags = {
     environment = local.environment
   }
+}
+
+output "VM1_private_ip" {
+  value     = azurerm_network_interface.Nic1.private_ip_address
+  sensitive = false
 }
 
 resource "azurerm_network_interface" "Nic2" {
@@ -216,12 +272,12 @@ resource "azurerm_linux_virtual_machine" "myterraformvm_1" {
   location              = var.location
   resource_group_name   = azurerm_resource_group.rg.name
   network_interface_ids = [azurerm_network_interface.Nic1.id]
-  size                  = "Standard_B1s"
+  size                  = "Standard_B2s"
 
   os_disk {
     name                 = "VM1disk"
     caching              = "ReadWrite"
-    storage_account_type = "Standard_LRS"
+    storage_account_type = "StandardSSD_LRS"
   }
 
   source_image_reference {
@@ -262,12 +318,12 @@ resource "azurerm_linux_virtual_machine" "myterraformvm_2" {
   location              = var.location
   resource_group_name   = azurerm_resource_group.rg.name
   network_interface_ids = [azurerm_network_interface.Nic2.id]
-  size                  = "Standard_B1s"
+  size                  = "Standard_B2s"
 
   os_disk {
     name                 = "VM2disk"
     caching              = "ReadWrite"
-    storage_account_type = "Standard_LRS"
+    storage_account_type = "StandardSSD_LRS"
   }
 
   source_image_reference {
@@ -301,12 +357,12 @@ resource "azurerm_linux_virtual_machine" "myterraformvm_3" {
   location              = var.location
   resource_group_name   = azurerm_resource_group.rg.name
   network_interface_ids = [azurerm_network_interface.Nic3.id]
-  size                  = "Standard_B1s"
+  size                  = "Standard_D2s_v3"
 
   os_disk {
     name                 = "VM3disk"
     caching              = "ReadWrite"
-    storage_account_type = "Standard_LRS"
+    storage_account_type = "StandardSSD_LRS"
   }
 
   source_image_reference {
@@ -334,6 +390,13 @@ resource "azurerm_linux_virtual_machine" "myterraformvm_3" {
   }
 }
 
+resource "local_file" "pem_file1" {
+  filename             = pathexpand("../sshVM1.pem")
+  file_permission      = "600"
+  directory_permission = "700"
+  sensitive_content    = tls_private_key.ssh_1.private_key_pem
+}
+
 resource "local_file" "pem_file2" {
   filename             = pathexpand("../sshVM2.pem")
   file_permission      = "600"
@@ -346,6 +409,20 @@ resource "local_file" "pem_file3" {
   file_permission      = "600"
   directory_permission = "700"
   sensitive_content    = tls_private_key.ssh_3.private_key_pem
+}
+
+resource "local_file" "VM1privateip_file" {
+  filename             = pathexpand("../VM1privateip.txt")
+  file_permission      = "600"
+  directory_permission = "700"
+  content              = azurerm_network_interface.Nic1.private_ip_address
+}
+
+resource "local_file" "VM1publicip_file" {
+  filename             = pathexpand("../VM1publicip.txt")
+  file_permission      = "600"
+  directory_permission = "700"
+  content              = azurerm_public_ip.VM1_public_ip.ip_address
 }
 
 resource "local_file" "VM2publicip_file" {

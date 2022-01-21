@@ -1,9 +1,9 @@
-  - name: jenkins installation
-    hosts: jenkins_node
+  - name: wildfly installation
+    hosts: wildfly_node
     vars:
       - https_uri: https://download.jboss.org/wildfly/24.0.1.Final/wildfly-24.0.1.Final.zip
       - wildfly_user: wildfly
-      - server_url: <node_ip>
+      - server_url: {{ wildfly_node_ip }}
       - wildfly_version: wildfly-24.0.1.Final
       
     tasks:
