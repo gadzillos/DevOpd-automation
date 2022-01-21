@@ -34,6 +34,6 @@
 
 - name: Add liferay portal config
   ansible.builtin.template:
-    src: liferay.cfg.j2
+    src: liferay_bundle.cfg.j2
     dest: "{{liferay_home_dir}}/portal-setup-wizard.properties"
     mode: 0600
