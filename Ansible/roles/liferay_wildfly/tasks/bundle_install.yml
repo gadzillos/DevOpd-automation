@@ -37,3 +37,18 @@
     src: liferay_bundle.cfg.j2
     dest: "{{liferay_home_dir}}/portal-setup-wizard.properties"
     mode: 0600
+
+- name: Create wildfly service dscription file for systemd
+  ansible.builtin.template:
+    src: wildfly.service.j2
+    dest: /etc/systemd/system/wildfly.service
+    mode: 0744
+  become: True
+
+- name: Enable and start systemd service
+  ansible.builtin.systemd:
+    name: wildfly
+    state: started
+    daemon_reload: True
+    enabled: True
+
