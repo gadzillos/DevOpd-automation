@@ -120,14 +120,14 @@ os.system(f"tar -cf repo.tar . &&" +
 os.system("sudo rm -f repo.tar")
 
 # Create password for Ansible Vault
-os.chdir(original_path + "/Ansible")
-password_length = 12
-password = secrets.token_urlsafe(password_length)
+# os.chdir(original_path + "/Ansible")
+# password_length = 12
+# password = secrets.token_urlsafe(password_length)
 
-with open("vault_password.txt", "w") as file:
-    file.write(password)
-with open("vault_password.yaml", "w") as file:
-    file.write(yaml.safe_dump({'vault_password': password}))
+# with open("vault_password.txt", "w") as file:
+#     file.write(password)
+# with open("vault_password.yaml", "w") as file:
+#     file.write(yaml.safe_dump({'vault_password': password}))
 
 # os.chdir(original_path + "/Ansible")
 # subprocess.run(
@@ -139,5 +139,4 @@ with open("vault_password.yaml", "w") as file:
 # Ansible playbook start --extra-vars '@credentials.yaml'
 terminal_message("Starting ansilbe jenkins_node_preparation.yml on VM2")
 os.chdir(original_path + "/Ansible")
-os.system(f"ansible-playbook -v -i inventory jenkins_node_preparation.yml " +
-          f"--vault-password-file vault_password.txt --extra-vars '@vault_password.yaml' --extra-vars 'credentials.yaml'")
+os.system(f"ansible-playbook -v -i inventory jenkins_node_preparation.yml")
