@@ -1,25 +1,42 @@
-# Azure cloud infrastracture project
+# DevOps cloud infrastructure automatization with CI/CD
 
 ## Schemas
 
-![photo_2021-10-28_13-03-21](/uploads/91010b7ffdf4b5b5ac63d6f0b1b0142a/photo_2021-10-28_13-03-21.jpg)
+![Alt text](common/images/diagram.png?raw=true "Title")
 
 ## Description
 
-Current repository, containing:  
--terraform files (for deploying instances in the cloud)  
+DevOps cloud infrastructure automatization with CI/CD
 
-Remote desktop to pull & deploy cloud infrastracture
-(including instance with Docker, instance with Jenkins, instance withmonitoring stack)
+### requirements
+
+```yaml
+OS: Centos 7+ (yum required)
+python: python3
+```
 
 ## Usage
 
-### Terraform
+### git-clone
 
 ```bash
-az login
-terraform init
-terraform validate
-terraform apply
-terraform destroy
+git clone https://github.com/gadzillos/DevOps-automation.git
+cd repo
+```
+
+### command line
+
+```bash
+python3 launch.py --path ~/path_to_Azure_token.json
+```
+
+### token format (Service Principal)
+
+```json
+{
+  "appId": "00000000-0000-0000-0000-000000000000",
+  "password": "0000-0000-0000-0000-000000000000",
+  "tenant": "00000000-0000-0000-0000-000000000000",
+  "subscriptionId": "00000000-0000-0000-0000-000000000000"
+}
 ```
