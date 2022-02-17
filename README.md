@@ -26,6 +26,8 @@ cd repo
 
 ### command line
 
+Used to start the script from working directory, requieries file written token for Azure Service Principal
+
 ```bash
 python3 launch.py --path ~/path_to_Azure_token.json
 ```
@@ -40,3 +42,5 @@ python3 launch.py --path ~/path_to_Azure_token.json
   "subscriptionId": "00000000-0000-0000-0000-000000000000"
 }
 ```
+
+## Overview
