@@ -40,7 +40,7 @@
 
 - name: Create wildfly service dscription file for systemd
   ansible.builtin.template:
-    src: wildfly.service.j2
+    src: wildfly_11.service.j2
     dest: /etc/systemd/system/wildfly.service
     mode: 0744
   become: True
