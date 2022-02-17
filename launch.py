@@ -5,7 +5,7 @@ import codecs
 import json
 import shutil
 import secrets
-import yaml
+#import yaml
 
 
 def terminal_message(message):
